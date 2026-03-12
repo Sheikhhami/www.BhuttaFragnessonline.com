@@ -80,18 +80,12 @@
                         <div>
                             <h4 class="text-gold font-bold mb-4 border-b pb-2">By Brand</h4>
                             <ul class="space-y-2 text-gray-600 normal-case font-normal">
-                                <li><a href="#" @click.prevent="fetchCategory('brand', 'Bhutta Royale')"
-                                        :class="activeCategory === 'Bhutta Royale' ? 'text-gold font-bold' : 'hover:text-primary'">Bhutta
-                                        Royale</a></li>
-                                <li><a href="#" @click.prevent="fetchCategory('brand', 'Oud Elite')"
-                                        :class="activeCategory === 'Oud Elite' ? 'text-gold font-bold' : 'hover:text-primary'">Oud
-                                        Elite</a></li>
-                                <li><a href="#" @click.prevent="fetchCategory('brand', 'Desert Rose')"
-                                        :class="activeCategory === 'Desert Rose' ? 'text-gold font-bold' : 'hover:text-primary'">Desert
-                                        Rose</a></li>
-                                <li><a href="#" @click.prevent="fetchCategory('brand', 'Saffron Nights')"
-                                        :class="activeCategory === 'Saffron Nights' ? 'text-gold font-bold' : 'hover:text-primary'">Saffron
-                                        Nights</a></li>
+                                <li><a href="#" @click.prevent="fetchCategory('brand', 'Bhutta Gold')"
+                                        :class="activeCategory === 'Bhutta Gold' ? 'text-gold font-bold' : 'hover:text-primary'">Bhutta
+                                        Gold</a></li>
+                                <li><a href="#" @click.prevent="fetchCategory('brand', 'Premium Collection')"
+                                        :class="activeCategory === 'Premium Collection' ? 'text-gold font-bold' : 'hover:text-primary'">Premium
+                                        Collection</a></li>
                             </ul>
                         </div>
                         <div>
@@ -183,8 +177,8 @@
                 <div class="p-4">
                     <input type="range" class="w-full accent-gold" min="0" max="500" step="10">
                     <div class="flex justify-between text-xs text-gray-500 mt-2">
-                        <span>$0</span>
-                        <span>$500+</span>
+                        <span>PKR 0</span>
+                        <span>PKR 1000+</span>
                     </div>
                 </div>
             </div>
@@ -286,9 +280,10 @@
 
                             <div class="mt-auto flex items-center justify-between">
                                 <div class="flex items-baseline space-x-2">
-                                    <span class="text-2xl font-black text-primary" x-text="'$' + product.price"></span>
+                                    <span class="text-2xl font-black text-primary"
+                                        x-text="'PKR ' + product.price"></span>
                                     <span class="text-sm text-gray-400 line-through"
-                                        x-text="'$' + product.oldPrice"></span>
+                                        x-text="'PKR ' + product.oldPrice"></span>
                                 </div>
                                 <button @click.stop="cartCount++"
                                     class="bg-gray-100 text-primary p-3 rounded-xl hover:bg-gold hover:text-white transition shadow-sm">
@@ -365,9 +360,9 @@
                 <div class="mb-8">
                     <h2 class="text-4xl font-black text-primary mb-2" x-text="selectedProduct?.name"></h2>
                     <div class="flex items-center space-x-4 mb-6">
-                        <span class="text-3xl font-bold text-gold" x-text="'$' + selectedProduct?.price"></span>
+                        <span class="text-3xl font-bold text-gold" x-text="'PKR ' + selectedProduct?.price"></span>
                         <span class="text-lg text-gray-300 line-through"
-                            x-text="'$' + selectedProduct?.oldPrice"></span>
+                            x-text="'PKR ' + selectedProduct?.oldPrice"></span>
                         <span
                             class="bg-blue-50 text-primary text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest"
                             x-text="selectedProduct?.discount"></span>
@@ -713,7 +708,7 @@
                             <div class="flex justify-between items-center mb-3">
                                 <span class="text-sm text-gray-600">Subtotal (<span x-text="cartCount"></span>
                                     items)</span>
-                                <span class="font-bold text-[#1d3557]" x-text="'$' + cartTotal.toFixed(2)"></span>
+                                <span class="font-bold text-[#1d3557]" x-text="'PKR ' + cartTotal.toFixed(2)"></span>
                             </div>
                             <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-100">
                                 <span class="text-sm text-gray-600">Delivery Fee</span>
@@ -721,7 +716,8 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="font-bold text-gray-800">Total</span>
-                                <span class="text-2xl font-black text-gold" x-text="'$' + cartTotal.toFixed(2)"></span>
+                                <span class="text-2xl font-black text-gold"
+                                    x-text="'PKR ' + cartTotal.toFixed(2)"></span>
                             </div>
                         </div>
                     </div>
@@ -871,15 +867,27 @@
                 orderLocation: null,
                 loginForm: { email: '', password: '' },
                 loginError: '',
-                cartTotal: 297.30,
-                userAddress: '123 Luxury Lane, Perfume District',
+                cartTotal: 1000.00,
+                userAddress: 'Main Bazar, Kasur, Pakistan',
                 database: [
-                    { id: 1, name: 'Midnight Oud', type: 'EDP', size: '100ml', price: 120, oldPrice: 150, discount: '30% OFF', notes: 'Oud, Amber, Rose', image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=600', hoverImage: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=600', videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', brand: 'Oud Elite', gender: 'Unisex', isNew: true, rating: 4.8, salesCount: 150 },
-                    { id: 2, name: 'Golden Amber', type: 'EDT', size: '50ml', price: 85, oldPrice: 110, discount: '20% OFF', notes: 'Amber, Vanilla, Musk', image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=600', hoverImage: 'https://images.unsplash.com/photo-1512777576244-b846ac3d816f?auto=format&fit=crop&q=80&w=600', videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', brand: 'Desert Rose', gender: 'Women', isNew: false, rating: 4.6, salesCount: 200 },
-                    { id: 3, name: 'Royal Rose', type: 'EDP', size: '100ml', price: 140, oldPrice: 175, discount: '20% OFF', notes: 'Rose, Patchouli, Saffron', image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&q=80&w=600', hoverImage: 'https://images.unsplash.com/photo-1590736704161-0427d55c7427?auto=format&fit=crop&q=80&w=600', videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', brand: 'Saffron Nights', gender: 'Women', isNew: true, rating: 4.9, salesCount: 80 },
-                    { id: 4, name: 'Silver Musk', type: 'EDT', size: '75ml', price: 95, oldPrice: 120, discount: '20% OFF', notes: 'Musk, Bergamot, Tea', image: 'https://images.unsplash.com/photo-1623164475253-e5d0339f4006?auto=format&fit=crop&q=80&w=600', hoverImage: 'https://images.unsplash.com/photo-1583209814613-5114a9a23992?auto=format&fit=crop&q=80&w=600', videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', brand: 'Oud Elite', gender: 'Men', isNew: false, rating: 4.2, salesCount: 45 },
-                    { id: 5, name: 'Sahara Sand', type: 'EDP', size: '100ml', price: 110, oldPrice: 145, discount: '15% OFF', notes: 'Sand, Smoke, Leather', image: 'https://images.unsplash.com/photo-1563170351-be82bc888bb4?auto=format&fit=crop&q=80&w=600', hoverImage: 'https://images.unsplash.com/photo-1557170334-a7c3c457c830?auto=format&fit=crop&q=80&w=600', videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', brand: 'Desert Rose', gender: 'Men', isNew: true, rating: 4.7, salesCount: 120 },
-                    { id: 6, name: 'Ocean Mist', type: 'EDP', size: '50ml', price: 75, oldPrice: 95, discount: '10% OFF', notes: 'Sea Salt, Lime, Cedar', image: 'https://images.unsplash.com/photo-1615484477778-ca3b77942c2c?auto=format&fit=crop&q=80&w=600', hoverImage: 'https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?auto=format&fit=crop&q=80&w=600', videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', brand: 'Bhutta Royale', gender: 'Unisex', isNew: false, rating: 4.4, salesCount: 300 }
+                    {
+                        id: 1,
+                        name: 'BHUTTA GOLD',
+                        type: 'Luxury Parfum',
+                        size: '100ml',
+                        price: 1000,
+                        oldPrice: 1500,
+                        discount: 'FREE TESTER',
+                        notes: 'BONES: FREE TESTER',
+                        image: 'bhutta_gold_perfume.png',
+                        hoverImage: 'bhutta_gold_perfume.png',
+                        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+                        brand: 'Bhutta Gold',
+                        gender: 'Unisex',
+                        isNew: true,
+                        rating: 5.0,
+                        salesCount: 50
+                    }
                 ],
                 products: [],
 
@@ -1044,10 +1052,10 @@
                         this.products = this.database.filter(p => p.rating > 4.5 || p.salesCount > 100);
                     } else if (type === 'brand') {
                         // Give "Bhutta Royale" 0 products to demonstrate empty state intentionally
-                        if (value === 'Bhutta Royale') {
-                            this.products = [];
-                        } else {
+                        if (value === 'Bhutta Gold') {
                             this.products = this.database.filter(p => p.brand === value);
+                        } else {
+                            this.products = [];
                         }
                     } else if (type === 'gender') {
                         this.products = this.database.filter(p => p.gender === value);
@@ -1068,7 +1076,7 @@
 
                 triggerWhatsApp() {
                     // Pre-fill the WhatsApp message
-                    const message = encodeURIComponent(`Hello Bhutta Fragness,\n\nI just placed a COD order for $${this.cartTotal.toFixed(2)}.\n\nMy delivery address is: ${this.userAddress}\n\nPlease confirm my order.`);
+                    const message = encodeURIComponent(`Hello Bhutta Fragness,\n\nI just placed a COD order for PKR ${this.cartTotal.toFixed(2)}.\n\nMy delivery address is: ${this.userAddress}\n\nPlease confirm my order.`);
                     const phoneNumber = "1234567890"; // Replace with actual business number
                     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
                 },
