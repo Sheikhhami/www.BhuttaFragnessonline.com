@@ -68,3 +68,19 @@ body {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
+
+.shadow-2xl-strong {
+  box-shadow: 0 25px 50px -12px rgba(26, 54, 93, 0.25);
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+/* Bottom Sheet specifically for mobile-first feel */
+@media (max-width: 768px) {
+  .rounded-t-\[2\.5rem\] {
+    border-top-left-radius: 2.5rem;
+    border-top-right-radius: 2.5rem;
+  }
+}

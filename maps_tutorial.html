@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps Learning Tutorial | Bhutta Fragrance</title>
+    
+    <!-- Simple CSS to make it look nice -->
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1 { color: #d4af37; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        #map { width: 100%; height: 400px; background-color: #ddd; border-radius: 10px; margin-bottom: 20px; }
+        input { width: 95%; padding: 12px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+        .guide { background: #fffde7; padding: 20px; border-left: 5px solid #fbc02d; margin-top: 30px; border-radius: 5px; }
+        code { background: #eee; padding: 2px 5px; border-radius: 3px; font-weight: bold; }
+        ol li { margin-bottom: 15px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📍 Map Learning Tutorial</h1>
+        <p>This is a simple version of the map you see on your website. Use this to understand how it works.</p>
+
+        <!-- 1. The Search Box -->
+        <label><b>Search for your area:</b></label>
+        <input type="text" id="address-box" placeholder="Type your area name here...">
+
+        <!-- 2. The Map Window -->
+        <div id="map"></div>
+
+        <!-- 3. The Dynamic Address Display -->
+        <label><b>Selected House Door:</b></label>
+        <input type="text" id="final-address" readonly placeholder="The address will show here automatically...">
+
+        <hr>
+
+        <!-- API KEY GUIDE -->
+        <div class="guide">
+            <h3>🔑 How to Fix the 'Something went wrong' Error (Get API Key)</h3>
+            <p>Google Maps requires a special password called an <b>API KEY</b> to work. Follow these 5 simple steps:</p>
+            <ol>
+                <li><b>Go to the Cloud:</b> Open the <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a> and sign in with your Gmail.</li>
+                <li><b>Create a Project:</b> Click 'Select a project' at the top and create a new one called <code>My Fragrance Shop</code>.</li>
+                <li><b>Enable the Maps:</b> Go to 'APIs & Services' -> 'Library'. Search for and click <b>ENABLE</b> on these three:
+                    <ul>
+                        <li><code>Maps JavaScript API</code> (to show the map)</li>
+                        <li><code>Places API</code> (to search addresses)</li>
+                        <li><code>Geocoding API</code> (to turn the pin into text)</li>
+                    </ul>
+                </li>
+                <li><b>Get the Key:</b> Go to 'APIs & Services' -> 'Credentials'. Click <b>+ CREATE CREDENTIALS</b> and choose 'API Key'.</li>
+                <li><b>Paste the Key:</b> Copy your new key and paste it into clinical files like <code>index.html</code> where it says <code>YOUR_API_KEY</code>.</li>
+            </ol>
+            <p><b>Note:</b> Google might ask for a credit card, but they give a huge free amount every month, so it's usually free for small sites!</p>
+        </div>
+    </div>
+
+    <!-- LOAD GOOGLE MAPS SCRIPT -->
+    <!-- REPLACE 'YOUR_API_KEY' with your real key to make this work! -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+
+    <script>
+        // THIS CODE RUNS WHEN THE PAGE LOADS
+        function initSimplifiedMap() {
+            // 1. SET THE STARTING LOCATION (Pakistan)
+            const startingPoint = { lat: 31.5204, lng: 74.3587 }; 
+
+            // 2. CREATE THE MAP
+            const myMap = new google.maps.Map(document.getElementById('map'), {
+                zoom: 14,
+                center: startingPoint
+            });
+
+            // 3. CREATE THE DRAGGABLE PIN
+            const myPin = new google.maps.Marker({
+                position: startingPoint,
+                map: myMap,
+                draggable: true, // This allows the customer to move it!
+                animation: google.maps.Animation.DROP
+            });
+
+            // 4. SETUP THE SEARCH BOX
+            const searchInput = document.getElementById('address-box');
+            const autocomplete = new google.maps.places.Autocomplete(searchInput);
+
+            // 5. WHEN USER SEARCHES FOR A PLACE:
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+                if (!place.geometry) return; // If user typed gibberish, stop.
+
+                // Move the map and the pin to the new search result
+                myMap.setCenter(place.geometry.location);
+                myPin.setPosition(place.geometry.location);
+                
+                // Show the address in the bottom box
+                document.getElementById('final-address').value = place.formatted_address;
+            });
+
+            // 6. WHEN USER DRAGS THE PIN (FOR EXACT DOOR):
+            myPin.addListener('dragend', function() {
+                const pinPosition = myPin.getPosition();
+                
+                // We use 'Geocoder' to ask Google: "What is the address of this GPS spot?"
+                const geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ location: pinPosition }, function(results, status) {
+                    if (status === 'OK') {
+                        // Update the text box with the exact house address
+                        document.getElementById('final-address').value = results[0].formatted_address;
+                    }
+                });
+            });
+        }
+
+        // Start everything!
+        google.maps.event.addDomListener(window, 'load', initSimplifiedMap);
+    </script>
+</body>
+</html>

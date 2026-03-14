@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning: My First Shipment & Payment Form</title>
+    
+    <!-- LEVEL 1: CSS (The "Paint and Design") -->
+    <!-- This part makes our website look pretty. Without it, everything is just plain text. -->
+    <style>
+        /* This sets the general mood of the page */
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background-color: #fce4ec; /* A soft pink background */
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+
+        /* This is our "Modal" - it's like a floating island on the page */
+        .order-modal {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        /* Headlines */
+        h2 { color: #880e4f; margin-bottom: 20px; }
+
+        /* The Steps - we hide them by default using "display: none" */
+        .step { display: none; }
+        /* We only show the step that has the "active" class! */
+        .step.active { display: block; }
+
+        /* Input Boxes */
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #f8bbd0;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        /* Buttons - the engine triggers */
+        button {
+            background: #ad1457;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: scale(1.05); background: #880e4f; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* The "Map" - a simple box that pretends to be Google Maps */
+        .mock-map {
+            height: 150px;
+            background: #e1f5fe;
+            border: 2px dashed #03a9f4;
+            border-radius: 15px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #03a9f4;
+            font-weight: bold;
+            position: relative;
+        }
+        .pin {
+            font-size: 30px;
+            position: absolute;
+            cursor: pointer;
+        }
+
+        /* Payment selection styles */
+        .payment-box {
+            border: 2px solid #fce4ec;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .payment-box.selected { border-color: #ad1457; background: #fdf2f8; }
+    </style>
+</head>
+<body>
+
+    <!-- THE MODAL BOX -->
+    <div class="order-modal">
+        
+        <!-- STEP 1: SHIPMENT DETAILS -->
+        <div id="step1" class="step active">
+            <h2>🏠 Shipment</h2>
+            <p>Tell us where to send your perfume!</p>
+            
+            <input type="text" id="userAddress" placeholder="Enter your full address">
+            <input type="text" id="userPhone" placeholder="Enter your phone number">
+
+            <!-- This is where the user "drags the pin" -->
+            <div class="mock-map">
+                <span>📍 Perfect Spot Found!</span>
+                <!-- In a real app, Google Maps would put a map here -->
+            </div>
+
+            <button onclick="goToPayment()">Continue to Payment</button>
+        </div>
+
+        <!-- STEP 2: PAYMENT METHODS -->
+        <div id="step2" class="step">
+            <h2>💳 Payment</h2>
+            
+            <div class="payment-box" onclick="pickPayment('cod')" id="cod">
+                <strong>Cash on Delivery</strong>
+                <p>Pay when you get it!</p>
+            </div>
+
+            <div class="payment-box" onclick="pickPayment('bank')" id="bank">
+                <strong>Bank Transfer</strong>
+                <p>Send a digital transfer.</p>
+            </div>
+
+            <button id="finalBtn" onclick="finishOrder()" disabled>Confirm My Order</button>
+            <button onclick="backToShipment()" style="background: #eee; color: #333; margin-top: 5px;">Back</button>
+        </div>
+
+        <!-- STEP 3: SUCCESS -->
+        <div id="step3" class="step">
+            <h2 style="font-size: 50px;">🛍️</h2>
+            <h2>Order Placed!</h2>
+            <p>Your luxury scent is on the way.</p>
+            <button onclick="location.reload()">Return Home</button>
+        </div>
+
+    </div>
+
+    <!-- LEVEL 2: JAVASCRIPT (The "Brain") -->
+    <!-- This part controls the logic - what happens when you click! -->
+    <script>
+        
+        // 1. Moving from Step 1 to Step 2
+        function goToPayment() {
+            // VERIFICATION: The Brain checks if the boxes are empty!
+            const address = document.getElementById('userAddress').value;
+            const phone = document.getElementById('userPhone').value;
+
+            // If the user forgot to type, we show a friendly alert
+            if (address == "" || phone == "") {
+                alert("Please fill in your address and phone number so we can find you! 😊");
+            } else {
+                // If everything is okay, we hide Step 1 and show Step 2
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step2').classList.add('active');
+            }
+        }
+
+        // 2. Picking a payment choice
+        function pickPayment(type) {
+            // First, un-select everything
+            document.querySelectorAll('.payment-box').forEach(box => box.classList.remove('selected'));
+            
+            // Then, select the one the user clicked
+            document.getElementById(type).classList.add('selected');
+            
+            // Now that a choice is made, we enable the "Confirm" button!
+            document.getElementById('finalBtn').disabled = false;
+        }
+
+        // 3. Going back if the user changed their mind
+        function backToShipment() {
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+        }
+
+        // 4. Finishing the Order
+        function finishOrder() {
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step3').classList.add('active');
+        }
+
+    </script>
+
+</body>
+</html>

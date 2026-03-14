@@ -16,10 +16,8 @@
     <header class="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
         <div class="container mx-auto px-4 py-4 flex items-center justify-between">
             <!-- Brand -->
-            <div class="flex items-center space-x-2">
-                <div class="w-10 h-10 bg-primary flex items-center justify-center rounded-full">
-                    <span class="text-white font-bold text-xl">B</span>
-                </div>
+            <div class="flex items-center space-x-3">
+                <img src="bhutta_logo.jpg" alt="Bhutta Fragness Logo" class="w-14 h-14 rounded-full shadow-md border border-gold/10">
                 <h1 class="text-2xl font-bold text-primary tracking-tight">Bhutta Fragness</h1>
             </div>
 
@@ -39,6 +37,15 @@
 
             <!-- Icons -->
             <div class="flex items-center space-x-6 text-primary">
+                <!-- Admin Tab -->
+                <button @click="isAdminLoggedIn ? (activeCategory = 'admin_dashboard') : (showAdminLoginModal = true)" 
+                        class="flex items-center space-x-1 px-3 py-1.5 rounded-full border border-gold/20 hover:bg-gold hover:text-white transition group focus:ring-2 focus:ring-gold/50 outline-none">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    <span class="text-xs font-bold uppercase tracking-wider">ADMIN</span>
+                </button>
+
                 <button class="hover:text-gold transition">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -182,6 +189,18 @@
                     </div>
                 </div>
             </div>
+            <!-- Admin Quick Actions -->
+            <div x-show="isAdminLoggedIn" class="mb-8 p-4 bg-primary/5 rounded-2xl border border-gold/20 shadow-sm animate-pulse-slow">
+                <h4 class="text-[10px] font-bold text-primary uppercase tracking-widest mb-4">Admin Hub</h4>
+                <button @click="beginAddProduct()" 
+                        class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-lg hover:bg-gold transition-all duration-300 flex items-center justify-center space-x-2 text-xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>ADD PRODUCT</span>
+                </button>
+                <button @click="logoutAdmin()" class="w-full mt-3 text-[10px] font-bold text-red-500 uppercase tracking-widest hover:underline">SIGN OUT PROTECTED</button>
+            </div>
         </aside>
 
         <!-- Product Grid Section -->
@@ -242,22 +261,28 @@
 
                         <!-- Image Section -->
                         <div class="relative h-64 overflow-hidden bg-gray-50">
+                            <!-- Admin Controls Overlay -->
+                            <div x-show="isAdminLoggedIn" class="absolute top-4 right-4 z-[30] flex space-x-2">
+                                <button @click.stop="beginEditProduct(product)" 
+                                        class="bg-blue-600 text-white p-2 rounded-lg shadow-xl hover:bg-blue-700 transition transform hover:scale-110 active:scale-95"
+                                        title="Edit Product">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </button>
+                                <button @click.stop="deleteProduct(product.id)" 
+                                        class="bg-red-600 text-white p-2 rounded-lg shadow-xl hover:bg-red-700 transition transform hover:scale-110 active:scale-95"
+                                        title="Delete Product">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
                             <img :src="product.image"
                                 class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:opacity-0">
                             <img :src="product.hoverImage"
                                 class="absolute inset-0 w-full h-full object-cover opacity-0 transition duration-700 group-hover:opacity-100 group-hover:scale-105">
-
-                            <!-- Video Icon Toggle -->
-                            <div
-                                class="absolute bottom-4 right-4 bg-white/90 p-2 rounded-full shadow-lg hover:bg-gold hover:text-white transition group/video">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
-                                    </path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
                         </div>
 
                         <!-- Content -->
@@ -285,11 +310,12 @@
                                     <span class="text-sm text-gray-400 line-through"
                                         x-text="'PKR ' + product.oldPrice"></span>
                                 </div>
-                                <button @click.stop="cartCount++"
-                                    class="bg-gray-100 text-primary p-3 rounded-xl hover:bg-gold hover:text-white transition shadow-sm">
+                                <button @click.stop="selectedProduct = product; triggerShipNow()"
+                                    class="bg-gray-100 text-primary p-3 rounded-xl hover:bg-gold hover:text-white transition shadow-sm"
+                                    title="Ship Now">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 4v16m8-8H4"></path>
+                                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                     </svg>
                                 </button>
                             </div>
@@ -320,27 +346,7 @@
             <!-- Multimedia Section -->
             <div class="md:w-1/2 h-[400px] md:h-auto bg-gray-50 border-r relative overflow-hidden group">
                 <!-- Main Slider (Simulated with current product images) -->
-                <div class="w-full h-full relative" x-data="{ view: 'image' }">
-                    <img x-show="view === 'image'" :src="selectedProduct?.image" class="w-full h-full object-cover">
-                    <video x-show="view === 'video'" :src="selectedProduct?.videoUrl" class="w-full h-full object-cover"
-                        autoplay muted loop></video>
-
-                    <!-- Toggle Controls -->
-                    <div class="absolute bottom-12 left-1/2 -translate-x-1/2 flex space-x-2">
-                        <button @click="view = 'image'" :class="view === 'image' ? 'bg-gold' : 'bg-white'"
-                            class="w-3 h-3 rounded-full shadow transition"></button>
-                        <button @click="view = 'video'" :class="view === 'video' ? 'bg-gold' : 'bg-white'"
-                            class="w-3 h-3 rounded-full shadow transition"></button>
-                    </div>
-
-                    <button @click="view = view === 'image' ? 'video' : 'image'"
-                        class="absolute right-8 bottom-8 flex items-center space-x-2 bg-primary/90 text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-gold transition shadow-xl">
-                        <span x-text="view === 'image' ? 'Watch Cinematic' : 'View Image'"></span>
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"></path>
-                        </svg>
-                    </button>
-                </div>
+                <img :src="selectedProduct?.image" class="w-full h-full object-cover">
             </div>
 
             <!-- Content Section -->
@@ -417,10 +423,29 @@
                     </div>
                 </div>
 
+                <!-- Merchant & Contact Info -->
+                <div class="mb-6 animate-fade-in">
+                    <div class="flex items-center space-x-3 p-4 bg-gold/5 rounded-2xl border border-gold/10">
+                        <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-[10px] font-black text-gold uppercase tracking-[0.2em] leading-none mb-1">Official Merchant</p>
+                            <p class="text-sm font-black text-primary">IBRAHIM</p>
+                        </div>
+                        <a href="tel:+923472973100" class="flex flex-col items-center px-3 py-2 bg-white rounded-xl shadow-sm border border-gray-100 hover:border-gold transition-colors group">
+                            <svg class="w-4 h-4 text-gold group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            <span class="text-[8px] font-bold text-gray-400 mt-1">Call Now</span>
+                        </a>
+                    </div>
+                </div>
+
                 <div class="flex space-x-4">
-                    <button @click="triggerAddToBag()"
-                        class="flex-1 bg-primary text-white py-5 rounded-2xl font-bold hover:bg-gold hover:shadow-xl transition-all duration-300 uppercase tracking-widest text-sm">Add
-                        to Bag</button>
+                    <button @click="triggerShipNow()"
+                        class="flex-1 bg-primary text-white py-5 rounded-2xl font-bold hover:bg-gold hover:shadow-xl transition-all duration-300 uppercase tracking-widest text-sm relative overflow-hidden group">
+                        <span class="relative z-10">Ship Now</span>
+                        <div class="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500"></div>
+                    </button>
                     <button
                         class="bg-gray-100 p-5 rounded-2xl text-primary hover:bg-red-50 hover:text-red-500 transition">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -452,10 +477,7 @@
 
             <!-- Top Section -->
             <div class="flex items-center space-x-4 mb-6 border-b pb-6 mt-2">
-                <div
-                    class="w-14 h-14 bg-gold rounded-full flex items-center justify-center text-white font-bold text-xl shadow-inner border-2 border-white ring-2 ring-gold/20">
-                    BF
-                </div>
+                <img src="bhutta_logo.jpg" alt="Bhutta Fragness Logo" class="w-14 h-14 rounded-full shadow-inner border-2 border-white ring-2 ring-gold/20">
                 <div>
                     <h3 class="font-bold text-gray-800 text-lg leading-none">Bhutta Fragness</h3>
                     <span class="text-xs text-green-500 font-semibold flex items-center mt-1">
@@ -559,10 +581,7 @@
 
             <!-- Brand Header -->
             <div class="text-center mb-8">
-                <div
-                    class="w-16 h-16 bg-[#1d3557] mx-auto rounded-full flex items-center justify-center mb-4 shadow-lg border-2 border-gold/30">
-                    <span class="text-gold font-bold text-3xl font-serif">B</span>
-                </div>
+                <img src="bhutta_logo.jpg" alt="Bhutta Fragness Logo" class="w-20 h-20 mx-auto rounded-full mb-4 shadow-lg border-2 border-gold/30">
                 <h2 class="text-2xl font-black text-[#1d3557] tracking-tight">Welcome to Luxury</h2>
                 <p class="text-sm text-gray-500 mt-2 font-medium">Sign in to complete your checkout journey</p>
             </div>
@@ -635,7 +654,108 @@
                 By sliding into luxury, you agree to our <br>
                 <a href="#" class="text-gold hover:underline">Terms of Service</a> & <a href="#"
                     class="text-gold hover:underline">Privacy Policy</a>.
-            </p>
+    <!-- Admin Login Modal -->
+    <div x-show="showAdminLoginModal"
+        class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-primary/80 backdrop-blur-xl"
+        x-cloak>
+        <div class="bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl relative border border-white/20" @click.away="showAdminLoginModal = false">
+            <button @click="showAdminLoginModal = false" class="absolute top-5 right-5 text-gray-400 hover:text-primary transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </button>
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-primary mx-auto rounded-full flex items-center justify-center mb-4 shadow-lg border-2 border-gold/30">
+                    <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <h2 class="text-2xl font-black text-primary uppercase">Admin Gate</h2>
+                <p class="text-xs text-gray-400 font-bold tracking-widest mt-1">SECURE MANAGEMENT ACCESS</p>
+            </div>
+            <form @submit.prevent="handleAdminLogin()" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Username</label>
+                    <input type="text" x-model="adminLoginForm.username" placeholder="Enter Username" class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold outline-none transition font-bold text-sm">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Password</label>
+                    <input type="password" x-model="adminLoginForm.password" placeholder="••••••••" class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-gold outline-none transition font-black tracking-widest text-sm">
+                </div>
+                <button type="submit" class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg hover:bg-gold transition-all duration-300 uppercase tracking-widest text-xs mt-4">Verify Identity</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin: Add/Edit Product Modal -->
+    <div x-show="showProductForm"
+        class="fixed inset-0 z-[160] flex items-center justify-center p-4 bg-primary/60 backdrop-blur-md"
+        x-cloak>
+        <div class="bg-white w-full max-w-4xl max-h-[90vh] rounded-3xl overflow-hidden shadow-2xl relative flex flex-col" @click.away="showProductForm = false">
+            <div class="px-8 py-6 bg-primary text-white flex justify-between items-center">
+                <h3 class="text-xl font-bold tracking-tight uppercase" x-text="editingProduct ? 'Update Masterpiece' : 'Add New Fragrance'"></h3>
+                <button @click="showProductForm = false" class="text-white/60 hover:text-white transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+            </div>
+            
+            <form @submit.prevent="saveProduct()" class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 overflow-y-auto">
+                <!-- Left: Visuals -->
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Primary Image URL</label>
+                        <input type="text" x-model="productForm.image" placeholder="Image Filename or URL" class="w-full px-4 py-3 bg-gray-50 border rounded-xl outline-none focus:border-gold transition text-sm">
+                        <div class="mt-4 bg-gray-50 border-2 border-dashed rounded-xl h-48 flex items-center justify-center overflow-hidden">
+                            <img :src="productForm.image" class="max-h-full object-contain" x-show="productForm.image">
+                            <span class="text-gray-300 font-bold" x-show="!productForm.image">Preview Image</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Hover Image URL</label>
+                        <input type="text" x-model="productForm.hoverImage" placeholder="Hover Image (optional)" class="w-full px-4 py-3 bg-gray-50 border rounded-xl outline-none focus:border-gold transition text-sm">
+                    </div>
+                </div>
+
+                <!-- Right: Details -->
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2">
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Product Name</label>
+                            <input type="text" x-model="productForm.name" required class="w-full px-4 py-3 bg-gray-50 border rounded-xl outline-none focus:border-gold font-bold text-primary transition text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Price (PKR)</label>
+                            <input type="number" x-model="productForm.price" required class="w-full px-4 py-2.5 bg-gray-50 border rounded-xl outline-none focus:border-gold font-bold text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Old Price (PKR)</label>
+                            <input type="number" x-model="productForm.oldPrice" class="w-full px-4 py-2.5 bg-gray-50 border rounded-xl outline-none focus:border-gold text-sm">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Category (Tab)</label>
+                            <select x-model="productForm.category" class="w-full px-4 py-2.5 bg-gray-50 border rounded-xl outline-none focus:border-gold text-sm font-bold">
+                                <option value="newarrivals">New Arrivals</option>
+                                <option value="bestsellers">Best Sellers</option>
+                                <option value="giftsets">Gift Sets</option>
+                                <option value="exclusive">Limited Edition</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Badge Text</label>
+                            <input type="text" x-model="productForm.discount" placeholder="e.g. 50% OFF" class="w-full px-4 py-2.5 bg-gray-50 border rounded-xl outline-none focus:border-gold text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Description / Notes</label>
+                        <textarea x-model="productForm.notes" rows="4" class="w-full px-4 py-3 bg-gray-50 border rounded-xl outline-none focus:border-gold text-sm leading-relaxed"></textarea>
+                    </div>
+
+                    <div class="pt-4 space-x-4 flex">
+                        <button type="submit" class="flex-1 bg-gold text-white font-bold py-4 rounded-xl shadow-xl hover:bg-primary transition-all duration-300 uppercase tracking-widest text-xs">Save Permanent Store Data</button>
+                        <button type="button" @click="showProductForm = false" class="px-6 bg-gray-100 text-gray-400 font-bold rounded-xl hover:bg-gray-200 transition text-xs uppercase uppercase">Cancel</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -748,6 +868,213 @@
         </div>
     </div>
 
+    <!-- Product Checkout Drawer (Bottom Sheet) -->
+    <div x-show="showCheckoutDrawer" 
+         class="fixed inset-0 z-[200] overflow-hidden" 
+         x-cloak>
+        <!-- Backdrop -->
+        <div x-show="showCheckoutDrawer"
+             x-transition:enter="transition-opacity ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-in duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="closeCheckoutDrawer()"
+             class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+        <!-- Sheet -->
+        <div x-show="showCheckoutDrawer"
+             x-transition:enter="transition-transform ease-out duration-500"
+             x-transition:enter-start="translate-y-full"
+             x-transition:enter-end="translate-y-0"
+             x-transition:leave="transition-transform ease-in duration-400"
+             x-transition:leave-start="translate-y-0"
+             x-transition:leave-end="translate-y-full"
+             class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[2.5rem] shadow-2xl-strong flex flex-col max-h-[85vh] md:max-w-md md:mx-auto">
+            
+            <!-- Handle -->
+            <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mt-4 mb-2"></div>
+
+            <!-- Content -->
+            <div class="px-8 pt-4 pb-8 overflow-y-auto">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-2xl font-black text-primary uppercase tracking-tight">Immediate Shipment</h2>
+                    <button @click="closeCheckoutDrawer()" class="text-gray-400 hover:text-red-500 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Product Preview -->
+                <div class="flex items-center space-x-6 p-4 bg-gray-50 rounded-3xl border border-gray-100 mb-6">
+                    <div class="w-20 h-20 rounded-2xl overflow-hidden bg-white shadow-sm border border-gold/10">
+                        <img :src="selectedProduct?.image" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-primary text-lg" x-text="selectedProduct?.name"></h3>
+                        <div class="flex items-baseline space-x-2 mt-1">
+                            <span class="text-md font-black text-gold" x-text="'PKR ' + selectedProduct?.price"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step Indicator -->
+                <div class="flex items-center justify-center space-x-4 mb-8">
+                    <div class="flex items-center space-x-2">
+                        <div :class="checkoutStep === 1 ? 'bg-gold text-white' : 'bg-green-500 text-white'" class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-colors duration-500">
+                            <span x-show="checkoutStep === 1">1</span>
+                            <svg x-show="checkoutStep > 1" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-primary">Logistics</span>
+                    </div>
+                    <div class="w-8 h-px bg-gray-200"></div>
+                    <div class="flex items-center space-x-2">
+                        <div :class="checkoutStep === 2 ? 'bg-gold text-white' : 'bg-gray-100 text-gray-400'" class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-colors duration-500">2</div>
+                        <span :class="checkoutStep === 2 ? 'text-primary' : 'text-gray-400'" class="text-[10px] font-black uppercase tracking-widest transition-colors duration-500">Payment</span>
+                    </div>
+                </div>
+
+                <!-- Step 1: Logistics -->
+                <div x-show="checkoutStep === 1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0">
+                    <!-- Customer Info Section -->
+                    <div class="mb-6 space-y-4">
+                        <div>
+                            <label class="block text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-2 px-1">Order Contact</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="email" 
+                                       x-model="customerEmail" 
+                                       placeholder="your.email@example.com"
+                                       class="w-full px-5 py-5 bg-gray-50 border-2 border-gray-50 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-gold/10 focus:border-gold focus:bg-white transition-all text-sm font-bold placeholder:text-gray-300">
+                                <input type="tel" 
+                                       x-model="customerPhone" 
+                                       placeholder="Phone (e.g. 03001234567)"
+                                       class="w-full px-5 py-5 bg-gray-50 border-2 border-gray-50 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-gold/10 focus:border-gold focus:bg-white transition-all text-sm font-bold placeholder:text-gray-300">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-2 px-1">Shipping Destination</label>
+                            <div class="relative group">
+                                <input id="ship-now-address"
+                                       type="text" 
+                                       x-model="deliveryAddress" 
+                                       @focus="initAutocomplete()"
+                                       placeholder="Search your area or street..."
+                                       class="w-full px-5 py-5 bg-gray-50 border-2 border-gray-50 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-gold/10 focus:border-gold focus:bg-white transition-all text-sm font-bold pr-14 placeholder:text-gray-300">
+                                <button @click="initMap()" 
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-gold text-white rounded-xl shadow-lg shadow-gold/30 hover:bg-primary transition-all duration-300 flex items-center justify-center animate-bounce-subtle"
+                                        title="Locate Me">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                </button>
+                            </div>
+                            <p class="text-[9px] font-bold text-gray-400 mt-3 px-1 flex items-center">
+                                <svg class="w-3 h-3 mr-1 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                Search your address above or drag the pin on the map
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Map Container -->
+                    <div x-show="showMap" 
+                         x-transition 
+                         class="mb-6 h-48 rounded-2xl overflow-hidden border border-gray-200 shadow-inner relative">
+                        <div id="drawer-map-container" class="w-full h-full bg-gray-100"></div>
+                        <div class="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm border border-gray-100 flex items-center space-x-2 pointer-events-none">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            <span class="text-[10px] font-bold text-primary italic">Live Location Locked</span>
+                        </div>
+                    </div>
+
+                    <!-- Quantity Selector -->
+                    <div class="flex items-center justify-between mb-6 px-1">
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Quantity</span>
+                        <div class="flex items-center bg-gray-50 rounded-xl p-1 border border-gray-100">
+                            <button @click="updateQuantity(-1)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white transition-all font-bold">-</button>
+                            <span class="w-10 text-center font-black text-primary" x-text="checkoutQuantity"></span>
+                            <button @click="updateQuantity(1)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white transition-all font-bold">+</button>
+                        </div>
+                    </div>
+                    
+                    <button @click="checkoutStep = 2"
+                            :disabled="!deliveryAddress || !customerEmail || !customerPhone"
+                            :class="(!deliveryAddress || !customerEmail || !customerPhone) ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:bg-gold hover:shadow-gold/30 active:scale-95'"
+                            class="w-full bg-primary text-white font-bold py-5 rounded-2xl shadow-xl transition-all duration-500 flex items-center justify-center space-x-3 group">
+                        <span class="uppercase tracking-widest text-sm">Proceed to Payment</span>
+                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Step 2: Payment Verification -->
+                <div x-show="checkoutStep === 2" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" x-cloak>
+                    <div class="mb-8 p-6 bg-gold/5 rounded-3xl border border-gold/10">
+                        <h4 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Payment Verification</h4>
+                        
+                        <div class="space-y-3">
+                            <button @click="paymentMethod = 'COD'" 
+                                    :class="paymentMethod === 'COD' ? 'border-gold bg-white shadow-md' : 'border-gray-100 bg-gray-50'"
+                                    class="w-full p-4 rounded-2xl border-2 flex items-center justify-between transition-all duration-300 group">
+                                <div class="flex items-center space-x-4">
+                                    <div :class="paymentMethod === 'COD' ? 'bg-gold' : 'bg-gray-200'" class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors">
+                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="text-sm font-black text-primary uppercase">Cash on Delivery</p>
+                                        <p class="text-[9px] font-bold text-gray-400">Pay when order arrives</p>
+                                    </div>
+                                </div>
+                                <div :class="paymentMethod === 'COD' ? 'bg-gold ring-4 ring-gold/10' : 'bg-gray-200'" class="w-4 h-4 rounded-full transition-all"></div>
+                            </button>
+
+                            <button @click="paymentMethod = 'BANK'" 
+                                    :class="paymentMethod === 'BANK' ? 'border-gold bg-white shadow-md' : 'border-gray-100 bg-gray-50'"
+                                    class="w-full p-4 rounded-2xl border-2 flex items-center justify-between transition-all duration-300 group">
+                                <div class="flex items-center space-x-4">
+                                    <div :class="paymentMethod === 'BANK' ? 'bg-gold' : 'bg-gray-200'" class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors">
+                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="text-sm font-black text-primary uppercase">Bank Transfer</p>
+                                        <p class="text-[9px] font-bold text-gray-400">Secure direct bank deposit</p>
+                                    </div>
+                                </div>
+                                <div :class="paymentMethod === 'BANK' ? 'bg-gold ring-4 ring-gold/10' : 'bg-gray-200'" class="w-4 h-4 rounded-full transition-all"></div>
+                            </button>
+                        </div>
+
+                        <!-- Bank Details (Instructional) -->
+                        <div x-show="paymentMethod === 'BANK'" x-transition class="mt-6 p-4 bg-gray-50 rounded-2xl border border-dashed border-gold/30">
+                            <p class="text-xs font-bold text-primary uppercase mb-2">Transfer Details:</p>
+                            <p class="text-[10px] text-gray-500 font-bold mb-1">Bank: Allied Bank Limited</p>
+                            <p class="text-[10px] text-gray-500 font-bold mb-1">Account: 01234567890123</p>
+                            <p class="text-[10px] text-gray-500 font-bold">Please send proof after payment.</p>
+                        </div>
+                    </div>
+
+                    <!-- Price Summary -->
+                    <div class="space-y-3 mb-8 px-1">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-400">Total Implementation</span>
+                            <span class="text-primary font-bold" x-text="'PKR ' + (selectedProduct ? selectedProduct.price * checkoutQuantity + shippingFee : 0).toLocaleString()"></span>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-3">
+                        <button @click="checkoutStep = 1" class="w-16 h-16 bg-gray-50 border border-gray-100 rounded-2xl flex items-center justify-center text-primary hover:bg-white transition-all">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                        <button @click="placeOrder()"
+                                class="flex-1 bg-primary text-white font-bold py-5 rounded-2xl shadow-xl transition-all duration-500 flex items-center justify-center space-x-3 group relative overflow-hidden">
+                            <span class="relative z-10 uppercase tracking-widest text-sm" x-text="isLoading ? 'Confirming...' : 'Place Order & Confirm'"></span>
+                            <div x-show="isLoading" class="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                            <div x-show="isPaymentVerifying" class="absolute inset-0 bg-gold/90 flex items-center justify-center space-x-2">
+                                <span class="text-white text-xs font-black animate-pulse uppercase tracking-widest">Processing...</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer Simulation -->
     <footer class="bg-primary text-white py-16">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -786,6 +1113,13 @@
     <style>
         [x-cloak] {
             display: none !important;
+        }
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(-3%) translateY(-50%); }
+            50% { transform: translateY(0%) translateY(-50%); }
+        }
+        .animate-bounce-subtle {
+            animation: bounce-subtle 2s infinite;
         }
     </style>
 
@@ -869,29 +1203,124 @@
                 loginError: '',
                 cartTotal: 1000.00,
                 userAddress: 'Main Bazar, Kasur, Pakistan',
+
+                // Admin State
+                isAdminLoggedIn: false,
+                showAdminLoginModal: false,
+                showProductForm: false,
+                adminLoginForm: { username: '', password: '' },
+                editingProduct: null,
+                showCheckoutDrawer: false,
+                checkoutQuantity: 1,
+                shippingFee: 150,
+                deliveryAddress: '',
+                customerEmail: '',
+                customerPhone: '',
+                showMap: false,
+                checkoutStep: 1,
+                paymentMethod: 'COD',
+                cardDetails: { number: '', expiry: '', cvv: '' },
+                isPaymentVerifying: false,
+                isPaymentVerified: false,
+                productForm: {
+                    name: '',
+                    price: 0,
+                    oldPrice: 0,
+                    image: '',
+                    hoverImage: '',
+                    notes: '',
+                    discount: '',
+                    category: 'newarrivals',
+                    brand: 'Bhutta Gold',
+                    gender: 'Unisex',
+                    type: 'Luxury Parfum',
+                    size: '100ml'
+                },
+
                 database: [
                     {
                         id: 1,
                         name: 'BHUTTA GOLD',
                         type: 'Luxury Parfum',
-                        size: '100ml',
-                        price: 1000,
-                        oldPrice: 1500,
+                        size: '50ml',
+                        price: 3000,
+                        oldPrice: 4500,
                         discount: 'FREE TESTER',
                         notes: 'BONES: FREE TESTER',
                         image: 'bhutta_gold_perfume.png',
                         hoverImage: 'bhutta_gold_perfume.png',
-                        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
                         brand: 'Bhutta Gold',
                         gender: 'Unisex',
                         isNew: true,
                         rating: 5.0,
                         salesCount: 50
+                    },
+                    {
+                        id: 2,
+                        name: 'Bhutta Memories',
+                        type: 'Luxury Parfum',
+                        size: '50ml',
+                        price: 3000,
+                        oldPrice: 4500,
+                        discount: 'SPECIAL OFFER',
+                        notes: 'Bonus free tester',
+                        image: 'bhutta_memories.jpg',
+                        hoverImage: 'bhutta_memories.jpg',
+                        brand: 'Bhutta Gold',
+                        gender: 'Unisex',
+                        isNew: true,
+                        rating: 4.8,
+                        salesCount: 12
+                    },
+                    {
+                        id: 3,
+                        name: 'Bhutta One MILLIon',
+                        type: 'Luxury Parfum',
+                        size: '50ml',
+                        price: 3000,
+                        oldPrice: 4500,
+                        discount: 'FREE TESTER',
+                        notes: 'Bonus free tester',
+                        image: 'bhutta_one_million.jpg',
+                        hoverImage: 'bhutta_one_million.jpg',
+                        brand: 'Bhutta Gold',
+                        gender: 'Unisex',
+                        isNew: true,
+                        rating: 4.9,
+                        salesCount: 8
+                    },
+                    {
+                        id: 4,
+                        name: 'Bhutta 24 Carat',
+                        type: 'Premium Parfum',
+                        size: '50ml',
+                        price: 3000,
+                        oldPrice: 4800,
+                        discount: 'FREE TESTER',
+                        notes: 'Bonus free tester',
+                        image: 'bhutta_24_carat.png',
+                        hoverImage: 'bhutta_24_carat.png',
+                        brand: 'Bhutta Gold',
+                        gender: 'Unisex',
+                        isNew: true,
+                        rating: 5.0,
+                        salesCount: 15
                     }
                 ],
                 products: [],
 
                 init() {
+                    // Try to restore admin session from localStorage
+                    if (localStorage.getItem('isAdminLoggedIn') === 'true') {
+                        this.isAdminLoggedIn = true;
+                    }
+
+                    // Load database from localStorage or use defaults
+                    const savedDb = localStorage.getItem('bhutta_fragness_db');
+                    if (savedDb) {
+                        this.database = JSON.parse(savedDb);
+                    }
+                    
                     this.products = this.database;
 
                     // Listen for errors from the Firebase module
@@ -913,14 +1342,44 @@
 
                 openCheckoutModal() {
                     this.showCheckoutModal = true;
-                    // In a real app, initialize Google Map here if it's not loaded
                     setTimeout(() => {
                         this.initMap();
                     }, 500);
                 },
 
+                initAutocomplete() {
+                    if (this.autocompleteInitialized || typeof google === 'undefined') return;
+                    
+                    const input = document.getElementById('ship-now-address');
+                    if (!input) return;
+
+                    const autocomplete = new google.maps.places.Autocomplete(input, {
+                        componentRestrictions: { country: "pk" },
+                        fields: ["address_components", "geometry", "formatted_address"]
+                    });
+
+                    autocomplete.addListener('place_changed', () => {
+                        const place = autocomplete.getPlace();
+                        if (!place.geometry) return;
+
+                        this.deliveryAddress = place.formatted_address;
+                        this.orderLocation = {
+                            lat: place.geometry.location.lat(),
+                            lng: place.geometry.location.lng()
+                        };
+                        this.showMap = true;
+                        this.renderMap(this.orderLocation);
+                    });
+
+                    this.autocompleteInitialized = true;
+                },
+
                 initMap() {
-                    // Try to get user's live location if permitted, else default to central
+                    // If in checkout drawer context
+                    if (this.showCheckoutDrawer) {
+                        this.showMap = true;
+                    }
+
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
                             (position) => {
@@ -931,47 +1390,34 @@
                                 this.renderMap(pos);
                             },
                             () => {
-                                // Default location if denied
-                                this.renderMap({ lat: 40.7128, lng: -74.0060 });
+                                this.renderMap({ lat: 31.4504, lng: 73.1350 }); // Default to Faisalabad/Pakistan area
                             }
                         );
                     } else {
-                        // Default location if no geoloc
-                        this.renderMap({ lat: 40.7128, lng: -74.0060 });
+                        this.renderMap({ lat: 31.4504, lng: 73.1350 });
                     }
                 },
 
                 renderMap(location) {
                     if (typeof google === 'undefined') {
-                        console.error("Google Maps API is not loaded. Ensure the script tag is present with a valid API key.");
+                        console.error("Google Maps API is not loaded.");
                         return;
                     }
 
-                    const mapElement = document.getElementById("google-map-container");
+                    // Determine which container to use
+                    const containerId = this.showCheckoutDrawer ? "drawer-map-container" : "google-map-container";
+                    const mapElement = document.getElementById(containerId);
+                    
                     if (!mapElement) return;
 
                     const map = new google.maps.Map(mapElement, {
                         center: location,
-                        zoom: 15,
+                        zoom: 16,
+                        disableDefaultUI: this.showCheckoutDrawer,
                         styles: [
-                            { elementType: "geometry", stylers: [{ color: "#f5f5f5" }] },
-                            { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
-                            { elementType: "labels.text.fill", stylers: [{ color: "#616161" }] },
-                            { elementType: "labels.text.stroke", stylers: [{ color: "#f5f5f5" }] },
-                            { featureType: "administrative.land_parcel", elementType: "labels.text.fill", stylers: [{ color: "#bdbdbd" }] },
-                            { featureType: "poi", elementType: "geometry", stylers: [{ color: "#eeeeee" }] },
-                            { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
-                            { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#e5e5e5" }] },
-                            { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
+                            { elementType: "geometry", stylers: [{ color: "#f8fafc" }] },
                             { featureType: "road", elementType: "geometry", stylers: [{ color: "#ffffff" }] },
-                            { featureType: "road.arterial", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
-                            { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#dadada" }] },
-                            { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#616161" }] },
-                            { featureType: "road.local", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
-                            { featureType: "transit.line", elementType: "geometry", stylers: [{ color: "#e5e5e5" }] },
-                            { featureType: "transit.station", elementType: "geometry", stylers: [{ color: "#eeeeee" }] },
-                            { featureType: "water", elementType: "geometry", stylers: [{ color: "#c9c9c9" }] },
-                            { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] }
+                            { featureType: "water", elementType: "geometry", stylers: [{ color: "#e2e8f0" }] }
                         ]
                     });
 
@@ -1004,31 +1450,82 @@
                     geocoder.geocode({ location: pos }, (results, status) => {
                         if (status === 'OK') {
                             if (results[0]) {
-                                this.userAddress = results[0].formatted_address;
+                                const address = results[0].formatted_address;
+                                this.userAddress = address;
+                                if (this.showCheckoutDrawer) {
+                                    this.deliveryAddress = address;
+                                }
                             }
                         }
                     });
                 },
 
+                // --- ORDER PLACEMENT LOGIC ---
+                // This function runs when the user clicks the final "Confirm" button.
                 placeOrder() {
+                    // 1. Verification Step:
+                    // We use "Regular Expressions" (regex) to check if the email format is correct.
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!this.customerEmail || !emailRegex.test(this.customerEmail)) {
+                        alert("Please provide a valid contact email.");
+                        this.checkoutStep = 1; // Send them back to Step 1 to fix it
+                        return;
+                    }
+
+                    // 2. Phone Verification:
+                    // We check if the phone number is at least 10 digits long.
+                    if (!this.customerPhone || this.customerPhone.length < 10) {
+                        alert("Please provide a valid phone number.");
+                        this.checkoutStep = 1;
+                        return;
+                    }
+
+                    // 3. Address Verification:
+                    // We make sure they didn't leave the destination empty.
+                    if (!this.deliveryAddress) {
+                        alert("Please provide a delivery address.");
+                        this.checkoutStep = 1;
+                        return;
+                    }
+
+                    // 4. Processing Animation:
+                    // We set 'isLoading' to true to show a spinning circle on the button.
                     this.isLoading = true;
-                    // Prepare the order payload to send to the backend
-                    const orderPayload = {
-                        address: this.userAddress,
-                        location: this.orderLocation,
-                        cartTotal: this.cartTotal,
-                        items: this.cartCount // simplified for demo
-                    };
-
-                    console.log("Placing Final Order:", orderPayload);
-
-                    // Send to backend (Simulated)
-                    // fetch('/api/checkout', { method: 'POST', body: JSON.stringify(orderPayload) })
+                    this.isPaymentVerifying = true; // Show the "Processing..." overlay
+                    
+                    // 5. Simulating a Real Server:
+                    // We use 'setTimeout' to wait for 2 seconds to act like we are talking to a bank.
                     setTimeout(() => {
+                        this.isPaymentVerifying = false;
+                        this.isPaymentVerified = true;
+
+                        // 6. Preparing the "Order Manifest":
+                        // This organizes all user data into a clean text block for the merchant.
+                        const orderDetails = `
+ORDER REQUEST DETAILS
+--------------------
+Customer Email: ${this.customerEmail}
+Customer Phone: ${this.customerPhone}
+Product: ${this.selectedProduct ? this.selectedProduct.name : 'N/A'}
+Bottle Size: 50ml
+Quantity: ${this.checkoutQuantity}
+Total: PKR ${(this.selectedProduct ? this.selectedProduct.price * this.checkoutQuantity + this.shippingFee : 0).toLocaleString()}
+Payment Status: ${this.paymentMethod === 'BANK' ? 'Payment Proof Required (Bank)' : 'Pending (COD)'}
+
+SHIPPING INFO
+-------------
+Address: ${this.deliveryAddress}
+Maps URL: https://www.google.com/maps/search/?api=1&query=${this.orderLocation?.lat},${this.orderLocation?.lng}
+                        `.trim();
+
+                        const subject = encodeURIComponent(`NEW ORDER: ${this.selectedProduct?.name} (${this.customerEmail})`);
+                        const body = encodeURIComponent(orderDetails);
+                        const mailtoLink = `mailto:sheikhhammadbinmunir@gmail.com?subject=${subject}&body=${body}`;
+
                         this.isLoading = false;
-                        this.showCheckoutModal = false;
-                        this.cartCount = 0;
-                        alert("Purchase Successful! An email confirmation has been sent to the merchant and your inbox.");
+                        window.location.href = mailtoLink;
+                        this.showCheckoutDrawer = false;
+                        alert("Order Confirmed! Please send the auto-generated email to completion your purchase.");
                     }, 2000);
                 },
 
@@ -1081,17 +1578,35 @@
                     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
                 },
 
-                triggerAddToBag() {
-                    // Instead of adding to cart immediately, open login modal
+                triggerShipNow() {
+                    if (!this.selectedProduct) return;
+                    
+                    // Create URL with product details to transfer state
+                    const params = new URLSearchParams({
+                        name: this.selectedProduct.name,
+                        price: this.selectedProduct.price,
+                        image: this.selectedProduct.image
+                    });
+                    
+                    // Open in new tab as requested
+                    window.open(`checkout.html?${params.toString()}`, '_blank');
+                },
+
+                closeCheckoutDrawer() {
+                    this.showCheckoutDrawer = false;
+                },
+
+                updateQuantity(amount) {
+                    this.checkoutQuantity = Math.max(1, this.checkoutQuantity + amount);
+                },
+
+                proceedToCheckout() {
+                    this.showCheckoutDrawer = false;
                     this.showLoginModal = true;
-                    // Close product details modal if open
-                    // this.selectedProduct = null;
                 },
 
                 handleLoginSubmit() {
                     this.loginError = '';
-
-                    // Basic Validation
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!this.loginForm.email) {
                         this.loginError = 'Email is required.';
@@ -1106,20 +1621,84 @@
                         return;
                     }
 
-                    // Simulated Backend Call
                     this.isLoading = true;
                     setTimeout(() => {
                         this.isLoading = false;
-                        // On success:
                         this.showLoginModal = false;
-                        this.cartCount++; // Add item to bag after login
+                        this.cartCount++;
                         this.selectedProduct = null;
-                        this.loginForm = { email: '', password: '' }; // Reset form
+                        this.loginForm = { email: '', password: '' };
                     }, 1000);
+                },
+
+                // Admin Logic
+                handleAdminLogin() {
+                    if (this.adminLoginForm.username === 'BHUTTA IBRAHIM 804' && this.adminLoginForm.password === 'BHUTTA 804') {
+                        this.isAdminLoggedIn = true;
+                        localStorage.setItem('isAdminLoggedIn', 'true');
+                        this.showAdminLoginModal = false;
+                        this.adminLoginForm = { username: '', password: '' };
+                        alert('Identity Verified. Admin session active.');
+                    } else {
+                        alert('Access Denied. Invalid Credentials.');
+                    }
+                },
+
+                logoutAdmin() {
+                    this.isAdminLoggedIn = false;
+                    localStorage.removeItem('isAdminLoggedIn');
+                    location.reload();
+                },
+
+                beginAddProduct() {
+                    this.editingProduct = null;
+                    this.productForm = {
+                        name: '', price: 3000, oldPrice: 3500, image: '', hoverImage: '',
+                        notes: '', discount: 'NEW', category: 'newarrivals',
+                        brand: 'Bhutta Gold', gender: 'Unisex', type: 'Luxury Parfum', size: '50ml'
+                    };
+                    this.showProductForm = true;
+                },
+
+                beginEditProduct(product) {
+                    this.editingProduct = product;
+                    this.productForm = { ...product };
+                    this.showProductForm = true;
+                },
+
+                saveProduct() {
+                    if (this.editingProduct) {
+                        // Update existing
+                        const index = this.database.findIndex(p => p.id === this.editingProduct.id);
+                        if (index !== -1) {
+                            this.database[index] = { ...this.productForm, id: this.editingProduct.id };
+                        }
+                    } else {
+                        // Add new
+                        const newId = this.database.length > 0 ? Math.max(...this.database.map(p => p.id)) + 1 : 1;
+                        const newProduct = { ...this.productForm, id: newId, isNew: true, rating: 5, salesCount: 0 };
+                        this.database.push(newProduct);
+                    }
+
+                    this.persistDatabase();
+                    this.showProductForm = false;
+                    this.fetchCategory('all', 'All');
+                    alert('Store data synchronized successfully.');
+                },
+
+                deleteProduct(id) {
+                    if (confirm('Are you sure you want to permanently delete this product from the master collection?')) {
+                        this.database = this.database.filter(p => p.id !== id);
+                        this.persistDatabase();
+                        this.fetchCategory('all', 'All');
+                    }
+                },
+
+                persistDatabase() {
+                    localStorage.setItem('bhutta_fragness_db', JSON.stringify(this.database));
                 }
             }));
         });
     </script>
 </body>
-
 </html>
