@@ -15,6 +15,16 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+const multer = require('multer');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const path = require('path');
+const fs = require('fs');
+
+// Configure Multer for memory storage
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Initialize Gemini
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -44,6 +54,82 @@ const transporter = nodemailer.createTransport({
  *   customerName: "John Doe"
  * }
  */
+
+app.post('/api/verify-payment', upload.single('receipt'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'No file uploaded.' });
+        }
+
+        const { expectedAmount, expectedReceiver } = req.body;
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        // Convert buffer to generative part
+        const imagePart = {
+            inlineData: {
+                data: req.file.buffer.toString('base64'),
+                mimeType: req.file.mimetype
+            }
+        };
+
+        const prompt = `
+            Analyze this EasyPaisa payment screenshot. 
+            Confirm if it is a successful transaction.
+            Extract the following details as JSON:
+            {
+              "amount": number,
+              "receiverNumber": "string",
+              "receiverName": "string",
+              "transactionId": "string",
+              "status": "success" | "failed",
+              "reason": "string if failed"
+            }
+            The expected amount is ${expectedAmount}, receiver number is ${expectedReceiver}, and receiver name is ${req.body.expectedReceiverName}.
+            Be strict about authenticity. If it looks like a fake edit or doesn't match the receiver details, set status to failed.
+            Only return the JSON block.
+        `;
+
+        const result = await model.generateContent([prompt, imagePart]);
+        const response = await result.response;
+        const text = response.text();
+        
+        // Extract JSON from response
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error('AI failed to return valid JSON');
+        
+        const verification = JSON.parse(jsonMatch[0]);
+
+        // Validation Logic
+        let isValid = verification.status === 'success';
+        let failReason = verification.reason || '';
+
+        if (isValid) {
+            if (parseFloat(verification.amount) < parseFloat(expectedAmount)) {
+                isValid = false;
+                failReason = `Amount mismatch: Received ${verification.amount}, expected ${expectedAmount}`;
+            }
+            if (!verification.receiverNumber.includes(expectedReceiver.replace(/\s/g, ''))) {
+                isValid = false;
+                failReason = `Receiver Number mismatch: Sent to ${verification.receiverNumber}, expected ${expectedReceiver}`;
+            }
+            if (req.body.expectedReceiverName && !verification.receiverName.toLowerCase().includes(req.body.expectedReceiverName.toLowerCase())) {
+                isValid = false;
+                failReason = `Receiver Name mismatch: Sent to ${verification.receiverName}, expected ${req.body.expectedReceiverName}`;
+            }
+        }
+
+        res.json({
+            success: isValid,
+            data: verification,
+            message: isValid ? 'Payment Verified Successfully' : failReason
+        });
+
+    } catch (error) {
+        console.error('AI Verification Error:', error);
+        res.status(500).json({ success: false, message: 'AI processing failed. Please try again or contact support.' });
+    }
+});
+
 app.post('/api/checkout', async (req, res) => {
     try {
         const { address, location, cartTotal, items, customerEmail, customerName } = req.body;
