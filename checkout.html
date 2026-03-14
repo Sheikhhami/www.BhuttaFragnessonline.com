@@ -58,22 +58,40 @@
                     <span class="w-8 h-8 rounded-full lux-gradient text-white flex items-center justify-center text-sm mr-3">1</span>
                     Order Summary
                 </h2>
-                <div class="flex items-center space-x-6 p-4 bg-gray-50 rounded-2xl">
-                    <div class="w-24 h-24 bg-white rounded-xl border gold-border overflow-hidden">
-                        <img :src="productData.image" alt="Product" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <h3 class="font-black text-lg" x-text="productData.name"></h3>
-                        <p class="text-sm text-gray-500 font-bold" x-text="productData.size"></p>
-                        <div class="mt-2 flex items-baseline space-x-2">
-                            <span class="text-xl font-black gold-text" x-text="'PKR ' + productData.price"></span>
+                <div class="space-y-4 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                    <template x-for="item in items" :key="item.id">
+                        <div class="flex items-center space-x-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 transition-all hover:shadow-md">
+                            <div class="w-20 h-20 bg-white rounded-xl border gold-border overflow-hidden flex-shrink-0">
+                                <img :src="item.image" alt="Product" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="font-black text-md leading-tight" x-text="item.name"></h3>
+                                    <span class="bg-primary text-white text-[9px] font-black px-2 py-0.5 rounded-full" x-text="'x' + (item.qty || 1)"></span>
+                                </div>
+                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1" x-text="(item.size || '50ml') + ' Bottle'"></p>
+                                <div class="mt-2 flex items-baseline space-x-2">
+                                    <span class="text-lg font-black gold-text" x-text="'PKR ' + item.price"></span>
+                                    <span class="text-[10px] text-gray-400 font-bold" x-text="'(Subtotal: PKR ' + (item.price * (item.qty || 1)).toLocaleString() + ')'"></span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </template>
                 </div>
                 
-                <div class="mt-6 pt-6 border-t border-gray-100 flex justify-between items-center">
-                    <span class="text-gray-500 font-bold">Total Amount</span>
-                    <span class="text-2xl font-black" x-text="'PKR ' + (parseInt(productData.price) + 150)"></span>
+                <div class="mt-6 pt-6 border-t border-gray-100 space-y-2">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-400 font-bold">Subtotal (<span x-text="items.reduce((acc, i) => acc + (i.qty || 1), 0)"></span> items)</span>
+                        <span class="font-black" x-text="'PKR ' + getItemsTotal().toLocaleString()"></span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-400 font-bold">Logistics Fee</span>
+                        <span class="font-black">PKR 150</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-gray-600 font-black uppercase tracking-widest text-xs">Total Amount</span>
+                        <span class="text-3xl font-black gold-text" x-text="'PKR ' + (getItemsTotal() + 150).toLocaleString()"></span>
+                    </div>
                 </div>
                 
                 <!-- Merchant Badge -->
@@ -152,44 +170,61 @@
                     Payment Verification
                 </h2>
                 
-                <div class="grid grid-cols-2 gap-4">
-                    <button @click="payment.method = 'cod'" 
-                            :class="payment.method === 'cod' ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-gray-100 bg-gray-50 text-slate-500'"
-                            class="p-4 rounded-2xl border-2 transition-all font-black text-xs uppercase tracking-widest flex flex-col items-center justify-center space-y-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm1-8H9m4 0h1m-5 4h1m4 0h1m-1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                        <span>COD</span>
-                    </button>
+                <div class="space-y-4">
                     <button @click="payment.method = 'bank'" 
-                            :class="payment.method === 'bank' ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-gray-100 bg-gray-50 text-slate-500'"
-                            class="p-4 rounded-2xl border-2 transition-all font-black text-xs uppercase tracking-widest flex flex-col items-center justify-center space-y-2">
+                            class="w-full p-4 rounded-2xl border-2 border-neutral-900 bg-neutral-900 text-white transition-all font-black text-xs uppercase tracking-widest flex flex-col items-center justify-center space-y-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                        <span>Wallet</span>
+                        <span>Wallet Payment</span>
                     </button>
                 </div>
 
-                <!-- COD Note -->
-                <div x-show="payment.method === 'cod'" class="mt-6 p-4 bg-neutral-50 rounded-2xl border-2 border-dashed border-neutral-200">
-                    <p class="text-[10px] font-black uppercase text-neutral-400 mb-1">COD Confirmation</p>
-                    <p class="text-[11px] font-bold text-neutral-600">Verification call/SMS will be sent to your number after order placement.</p>
-                </div>
+
 
                 <!-- Digital Wallet / Bank Receipt Upload -->
                 <div x-show="payment.method === 'bank'" class="mt-6 space-y-4">
                     <div class="p-4 bg-neutral-900 rounded-2xl text-white">
                         <p class="text-[10px] uppercase font-black text-gray-500 mb-3 tracking-widest">Our Payment Details</p>
-                        <div class="space-y-2">
-                            <div class="flex justify-between text-xs"><span class="text-gray-400">JazzCash/EasyPaisa</span><span class="font-black">0321 4567890</span></div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between text-xs"><span class="text-gray-400">EasyPaisa</span><span class="font-black">0321 4567890</span></div>
                             <div class="flex justify-between text-xs"><span class="text-gray-400">Account Name</span><span class="font-black">Bhutta Fragrance</span></div>
+                            
+                            <!-- EasyPaisa Deep Link Button -->
+                            <a href="easypaisa://03214567890" 
+                               class="flex items-center justify-center space-x-2 w-full py-3 mt-2 bg-[#00A94F] hover:bg-[#008c41] text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg active:scale-95">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/></svg>
+                                <span>Open EasyPaisa App</span>
+                            </a>
                         </div>
                     </div>
                     
                     <div class="relative">
                         <label class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">Upload Receipt (ScreenShot)</label>
                         <div class="w-full relative">
-                            <input type="file" @change="handleFileUpload" class="hidden" id="receipt-upload">
-                            <label for="receipt-upload" class="w-full flex items-center justify-between px-5 py-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 cursor-pointer hover:border-neutral-900 transition-all">
-                                <span class="text-sm font-bold text-gray-500" x-text="receiptUploaded ? 'Receipt Attached ✓' : 'Click to Upload...'"></span>
-                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            <input type="file" @change="handleFileUpload" class="hidden" id="receipt-upload" accept="image/*">
+                            <label for="receipt-upload" 
+                                   :class="{
+                                       'border-neutral-900 bg-white': verificationStatus === 'verified',
+                                       'border-red-500 bg-red-50': verificationStatus === 'failed',
+                                       'border-blue-500 bg-blue-50': verificationStatus === 'verifying',
+                                       'border-gray-200 bg-gray-50': verificationStatus === 'idle'
+                                   }"
+                                   class="w-full flex items-center justify-between px-5 py-4 rounded-2xl border-2 border-dashed cursor-pointer hover:border-neutral-900 transition-all">
+                                <div>
+                                    <span class="text-sm font-bold text-gray-900" x-text="getUploadLabel()"></span>
+                                    <p x-show="verificationStatus === 'failed'" class="text-[9px] text-red-600 font-bold mt-1" x-text="verificationMessage"></p>
+                                </div>
+                                <div class="flex items-center">
+                                    <template x-if="verificationStatus === 'verifying'">
+                                        <div class="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                    </template>
+                                    <template x-if="verificationStatus === 'verified'">
+                                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </template>
+                                    <template x-if="verificationStatus === 'failed'">
+                                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </template>
+                                    <svg x-show="verificationStatus === 'idle'" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                </div>
                             </label>
                         </div>
                     </div>
@@ -210,7 +245,8 @@
     <script>
         function checkoutApp() {
             return {
-                productData: {
+                items: [],
+                productData: { // Legacy single product fallback
                     name: 'Bhutta Gold',
                     price: '3000',
                     image: 'bhutta_gold_perfume.png',
@@ -224,21 +260,53 @@
                     location: null
                 },
                 payment: {
-                    method: 'cod'
+                    method: 'bank'
                 },
                 map: null,
                 marker: null,
+                verificationStatus: 'idle', // idle, verifying, verified, failed
+                verificationMessage: '',
                 receiptUploaded: false,
                 isSubmitting: false,
 
+                getUploadLabel() {
+                    const labels = {
+                        idle: 'Tap to Upload Screenshot...',
+                        verifying: 'AI is Analyzing Receipt...',
+                        verified: 'Payment Verified ✓',
+                        failed: 'Verification Failed ✖'
+                    };
+                    return labels[this.verificationStatus];
+                },
+
                 init() {
-                    // Load product details from URL
-                    const params = new URLSearchParams(window.location.search);
-                    if (params.get('name')) this.productData.name = params.get('name');
-                    if (params.get('price')) this.productData.price = params.get('price');
-                    if (params.get('image')) this.productData.image = params.get('image');
+                    // Check for multi-product queue first
+                    const queue = localStorage.getItem('ship_now_queue');
+                    if (queue) {
+                        this.items = JSON.parse(queue);
+                        console.log("Loaded multi-product queue:", this.items);
+                    } else {
+                        // Fallback to URL params for single product
+                        const params = new URLSearchParams(window.location.search);
+                        if (params.get('name')) {
+                            this.items = [{
+                                id: Date.now(),
+                                name: params.get('name'),
+                                price: parseInt(params.get('price')),
+                                image: params.get('image'),
+                                size: '50ml Bottle'
+                            }];
+                        } else {
+                            // Default placeholder if nothing found
+                            this.items = [this.productData];
+                        }
+                    }
                     
                     this.initMap();
+                },
+
+                getItemsTotal() {
+                    return this.items.reduce((sum, item) => sum + (parseInt(item.price) * (item.qty || 1)), 0);
                 },
 
                 initMap() {
@@ -307,8 +375,40 @@
                     });
                 },
 
-                handleFileUpload() {
-                    this.receiptUploaded = true;
+                async handleFileUpload(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    this.verificationStatus = 'verifying';
+                    this.verificationMessage = '';
+                    
+                    const formData = new FormData();
+                    formData.append('receipt', file);
+                    formData.append('expectedAmount', this.getItemsTotal() + 150);
+                    formData.append('expectedReceiver', '03214567890');
+                    formData.append('expectedReceiverName', 'IBRAHIM BHutta');
+
+                    try {
+                        const response = await fetch('http://localhost:3000/api/verify-payment', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const result = await response.json();
+
+                        if (result.success) {
+                            this.verificationStatus = 'verified';
+                            this.receiptUploaded = true;
+                        } else {
+                            this.verificationStatus = 'failed';
+                            this.verificationMessage = result.message || 'Invalid screenshot. Try again.';
+                            this.receiptUploaded = false;
+                        }
+                    } catch (error) {
+                        this.verificationStatus = 'failed';
+                        this.verificationMessage = 'AI Server offline. Please upload manual receipt.';
+                        this.receiptUploaded = true; // Allow fallback if server is down (user choice)
+                        console.error('Upload error:', error);
+                    }
                 },
 
                 placeFinalOrder() {
@@ -330,9 +430,13 @@
                         return;
                     }
 
-                    if (this.payment.method === 'bank' && !this.receiptUploaded) {
-                        alert("Please upload your payment receipt to proceed.");
-                        return;
+                    if (this.payment.method === 'bank' && this.verificationStatus !== 'verified') {
+                        if (confirm("Payment verification is incomplete. Do you want to process this order manually?")) {
+                            // If user manually confirms, we skip AI check
+                        } else {
+                            alert("Please upload a valid payment receipt to proceed.");
+                            return;
+                        }
                     }
 
                     this.isSubmitting = true;
@@ -340,7 +444,7 @@
                     // Simulate order saving to database "Pending Verification"
                     console.log("Saving Order to Database: PENDING VERIFICATION");
                     console.log("Payload:", {
-                        product: this.productData,
+                        items: this.items,
                         shipping: this.shipping,
                         payment: this.payment,
                         status: 'Pending Verification'
@@ -349,10 +453,16 @@
                     setTimeout(() => {
                         this.isSubmitting = false;
                         
-                        // Prep mailto for merchant (since there's no actual API connected here)
-                        const subject = encodeURIComponent(`Bhutta Order: ${this.productData.name} (${this.shipping.phone})`);
+                        const itemsDescription = this.items.map(item => `   - ${item.name} x${item.qty || 1} (Subtotal: PKR ${(item.price * (item.qty || 1)).toLocaleString()})`).join('\n');
+                        const subject = encodeURIComponent(`Bhutta Multi-Order: ${this.items.length} Scents (${this.shipping.phone})`);
                         const body = encodeURIComponent(`
-NEW ORDER: ${this.productData.name}
+NEW ORDER: ${this.items.reduce((acc, i) => acc + (i.qty || 1), 0)} ITEMS
+-----------------------------
+ITEMS:
+${itemsDescription}
+
+LOGISTICS FEE: PKR 150
+GRAND TOTAL: PKR ${(this.getItemsTotal() + 150).toLocaleString()}
 -----------------------------
 NAME: ${this.shipping.name}
 PHONE: ${this.shipping.phone}
@@ -360,13 +470,13 @@ CITY: ${this.shipping.city}
 ADDRESS: ${this.shipping.address}
 MAP: https://www.google.com/maps/search/?api=1&query=${this.shipping.location.lat},${this.shipping.location.lng}
 
-PAYMENT: ${this.payment.method === 'cod' ? 'CASH ON DELIVERY' : 'DIGITAL WALLET (Receipt Attached)'}
-AMOUNT: PKR ${parseInt(this.productData.price) + 150}
+PAYMENT: DIGITAL WALLET (Receipt Attached)
 -----------------------------
 STATUS: PENDING VERIFICATION
                         `.trim());
 
                         window.location.href = `mailto:sheikhhammadbinmunir@gmail.com?subject=${subject}&body=${body}`;
+                        localStorage.removeItem('ship_now_queue');
                         alert("Success! Your order is now 'Pending Verification'. We have opened your email client to notify our team.");
                     }, 2000);
                 }
