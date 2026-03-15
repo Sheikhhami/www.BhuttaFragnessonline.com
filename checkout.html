@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <!-- Maps API Removed (Using Embed Mode) -->
-    
+
     <script>
         window.gm_authFailure = () => {
             console.error("Google Maps API Authentication Failed. Check API Key.");
@@ -17,16 +18,42 @@
         };
     </script>
     <style>
-        body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; }
-        [x-cloak] { display: none !important; }
-        .lux-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
-        .gold-border { border-color: #d4af37; }
-        .gold-text { color: #d4af37; }
-        .gold-bg { background-color: #d4af37; }
-        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-        .floating-label { transition: all 0.2s ease-out; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .lux-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .gold-border {
+            border-color: #d4af37;
+        }
+
+        .gold-text {
+            color: #d4af37;
+        }
+
+        .gold-bg {
+            background-color: #d4af37;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .floating-label {
+            transition: all 0.2s ease-out;
+        }
     </style>
 </head>
+
 <body class="text-slate-900" x-data="checkoutApp()">
 
     <!-- Header Section -->
@@ -37,15 +64,21 @@
         </div>
         <div class="container mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between">
             <div class="text-center md:text-left mb-6 md:mb-0">
-                <a href="index.html" class="inline-flex items-center text-xs font-black uppercase tracking-widest text-gold-text mb-4 hover:opacity-80 transition">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                <a href="index.html"
+                    class="inline-flex items-center text-xs font-black uppercase tracking-widest text-gold-text mb-4 hover:opacity-80 transition">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
                     Back to Collection
                 </a>
                 <h1 class="text-5xl font-black uppercase tracking-tighter">Secure Checkout</h1>
-                <p class="text-slate-400 text-sm font-medium mt-2">Bhutta Fragrance | Premium Logistics & Multi-Step Verification</p>
+                <p class="text-slate-400 text-sm font-medium mt-2">Bhutta Fragrance | Premium Logistics & Multi-Step
+                    Verification</p>
             </div>
             <div class="hidden md:block">
-                <div class="bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10 flex items-center space-x-3">
+                <div
+                    class="bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10 flex items-center space-x-3">
                     <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                     <span class="text-xs font-bold uppercase tracking-widest">Live Secure Connection</span>
                 </div>
@@ -54,39 +87,45 @@
     </header>
 
     <main class="container mx-auto max-w-5xl py-12 px-4 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
+
         <!-- Left Column: Order Summary & Logistics -->
         <div class="space-y-8">
             <!-- Product Information -->
             <section class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
                 <h2 class="text-xl font-black mb-6 flex items-center">
-                    <span class="w-8 h-8 rounded-full lux-gradient text-white flex items-center justify-center text-sm mr-3">1</span>
+                    <span
+                        class="w-8 h-8 rounded-full lux-gradient text-white flex items-center justify-center text-sm mr-3">1</span>
                     Order Summary
                 </h2>
                 <div class="space-y-4 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
                     <template x-for="item in items" :key="item.id">
-                        <div class="flex items-center space-x-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 transition-all hover:shadow-md">
+                        <div
+                            class="flex items-center space-x-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 transition-all hover:shadow-md">
                             <div class="w-20 h-20 bg-white rounded-xl border gold-border overflow-hidden flex-shrink-0">
                                 <img :src="item.image" alt="Product" class="w-full h-full object-cover">
                             </div>
                             <div class="flex-1">
                                 <div class="flex justify-between items-start">
                                     <h3 class="font-black text-md leading-tight" x-text="item.name"></h3>
-                                    <span class="bg-primary text-white text-[9px] font-black px-2 py-0.5 rounded-full" x-text="'x' + (item.qty || 1)"></span>
+                                    <span class="bg-primary text-white text-[9px] font-black px-2 py-0.5 rounded-full"
+                                        x-text="'x' + (item.qty || 1)"></span>
                                 </div>
-                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1" x-text="(item.size || '50ml') + ' Bottle'"></p>
+                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1"
+                                    x-text="(item.size || '50ml') + ' Bottle'"></p>
                                 <div class="mt-2 flex items-baseline space-x-2">
                                     <span class="text-lg font-black gold-text" x-text="'PKR ' + item.price"></span>
-                                    <span class="text-[10px] text-gray-400 font-bold" x-text="'(Subtotal: PKR ' + (item.price * (item.qty || 1)).toLocaleString() + ')'"></span>
+                                    <span class="text-[10px] text-gray-400 font-bold"
+                                        x-text="'(Subtotal: PKR ' + (item.price * (item.qty || 1)).toLocaleString() + ')'"></span>
                                 </div>
                             </div>
                         </div>
                     </template>
                 </div>
-                
+
                 <div class="mt-6 pt-6 border-t border-gray-100 space-y-2">
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-gray-400 font-bold">Subtotal (<span x-text="items.reduce((acc, i) => acc + (i.qty || 1), 0)"></span> items)</span>
+                        <span class="text-gray-400 font-bold">Subtotal (<span
+                                x-text="items.reduce((acc, i) => acc + (i.qty || 1), 0)"></span> items)</span>
                         <span class="font-black" x-text="'PKR ' + getItemsTotal().toLocaleString()"></span>
                     </div>
                     <div class="flex justify-between items-center text-sm">
@@ -95,20 +134,26 @@
                     </div>
                     <div class="flex justify-between items-center pt-2">
                         <span class="text-gray-600 font-black uppercase tracking-widest text-xs">Total Amount</span>
-                        <span class="text-3xl font-black gold-text" x-text="'PKR ' + (getItemsTotal() + 150).toLocaleString()"></span>
+                        <span class="text-3xl font-black gold-text"
+                            x-text="'PKR ' + (getItemsTotal() + 150).toLocaleString()"></span>
                     </div>
                 </div>
-                
+
                 <!-- Merchant Badge -->
                 <div class="mt-4 p-3 bg-neutral-900 rounded-xl flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 rounded-full bg-gold-bg flex items-center justify-center text-white text-[10px]">IB</div>
+                        <div
+                            class="w-8 h-8 rounded-full bg-gold-bg flex items-center justify-center text-white text-[10px]">
+                            IB</div>
                         <div>
-                            <p class="text-[9px] font-black text-gray-500 uppercase leading-none mb-1">Trusted Merchant</p>
+                            <p class="text-[9px] font-black text-gray-500 uppercase leading-none mb-1">Trusted Merchant
+                            </p>
                             <p class="text-xs font-black text-white">IBRAHIM</p>
                         </div>
                     </div>
-                    <a href="tel:+923472973100" class="text-gold-text text-[10px] font-black uppercase tracking-widest border-b border-gold-text/30 hover:border-gold-text transition">Support +92 347</a>
+                    <a href="tel:+923472973100"
+                        class="text-gold-text text-[10px] font-black uppercase tracking-widest border-b border-gold-text/30 hover:border-gold-text transition">Support
+                        +92 347</a>
                 </div>
                 <p class="text-[10px] text-gray-400 mt-2 text-right">* Includes PKR 150 standard delivery fee</p>
             </section>
@@ -116,24 +161,31 @@
             <!-- Shipping Information -->
             <section class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
                 <h2 class="text-xl font-black mb-6 flex items-center">
-                    <span class="w-8 h-8 rounded-full lux-gradient text-white flex items-center justify-center text-sm mr-3">2</span>
+                    <span
+                        class="w-8 h-8 rounded-full lux-gradient text-white flex items-center justify-center text-sm mr-3">2</span>
                     Shipping Details
                 </h2>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">Full Name</label>
-                        <input type="text" x-model="shipping.name" placeholder="E.g. Ibrahim Bhutta" 
-                               class="w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-neutral-900 outline-none transition-all font-bold text-sm">
+                        <label
+                            class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">Full
+                            Name</label>
+                        <input type="text" x-model="shipping.name" placeholder="E.g. Ibrahim Bhutta"
+                            class="w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-neutral-900 outline-none transition-all font-bold text-sm">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">Phone Number (11 Digits)</label>
-                        <input type="tel" x-model="shipping.phone" placeholder="03XXXXXXXXX" 
-                               class="w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-neutral-900 outline-none transition-all font-bold text-sm">
+                        <label
+                            class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">Phone
+                            Number (11 Digits)</label>
+                        <input type="tel" x-model="shipping.phone" placeholder="03XXXXXXXXX"
+                            class="w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-neutral-900 outline-none transition-all font-bold text-sm">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">City / Area</label>
-                        <input type="text" x-model="shipping.city" placeholder="E.g. Lahore, Pakistan" 
-                               class="w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-neutral-900 outline-none transition-all font-bold text-sm">
+                        <label
+                            class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">City
+                            / Area</label>
+                        <input type="text" x-model="shipping.city" placeholder="E.g. Lahore, Pakistan"
+                            class="w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-neutral-900 outline-none transition-all font-bold text-sm">
                     </div>
                 </div>
             </section>
@@ -144,46 +196,54 @@
             <!-- Google Maps Integration -->
             <section class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
                 <h2 class="text-xl font-black mb-2 flex items-center">
-                    <span class="w-8 h-8 rounded-full lux-gradient text-white flex items-center justify-center text-sm mr-3">3</span>
+                    <span
+                        class="w-8 h-8 rounded-full lux-gradient text-white flex items-center justify-center text-sm mr-3">3</span>
                     Pinpoint Your Door
                 </h2>
-                <p class="text-xs text-gray-400 font-bold mb-6 px-1">Help our riders find you instantly by dragging the pin.</p>
-                
+                <p class="text-xs text-gray-400 font-bold mb-6 px-1">Help our riders find you instantly by dragging the
+                    pin.</p>
+
                 <div class="relative group">
-                    <div class="w-full h-96 rounded-[2.5rem] bg-gray-50 border-2 border-gray-100 overflow-hidden relative shadow-inner">
-                        <iframe 
-                            :src="mapEmbedUrl" 
-                            class="w-full h-full border-0" 
-                            allowfullscreen="" 
-                            loading="lazy" 
+                    <div
+                        class="w-full h-96 rounded-[2.5rem] bg-gray-50 border-2 border-gray-100 overflow-hidden relative shadow-inner">
+                        <iframe :src="mapEmbedUrl" class="w-full h-full border-0" allowfullscreen="" loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
-                        
+
 
                         <!-- Floating Search Bar Over Map -->
                         <div class="absolute top-6 left-6 right-6 pointer-events-none flex justify-center">
-                            <div class="max-w-md w-full pointer-events-auto bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-neutral-100 flex overflow-hidden ring-4 ring-neutral-900/5 transform transition hover:scale-[1.02]">
-                                <input type="text" 
-                                       x-model="shipping.address" 
-                                       @keyup.enter="updateMapEmbed()"
-                                       placeholder="Enter your house address or landmark..." 
-                                       class="flex-1 px-6 py-4 text-xs font-bold outline-none bg-transparent placeholder:text-gray-400">
-                                <button @click="updateMapEmbed()" 
-                                        class="px-6 bg-neutral-900 text-white hover:bg-gold-bg transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            <div
+                                class="max-w-md w-full pointer-events-auto bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-neutral-100 flex overflow-hidden ring-4 ring-neutral-900/5 transform transition hover:scale-[1.02]">
+                                <input type="text" x-model="shipping.address" @keyup.enter="updateMapEmbed()"
+                                    placeholder="Enter your house address or landmark..."
+                                    class="flex-1 px-6 py-4 text-xs font-bold outline-none bg-transparent placeholder:text-gray-400">
+                                <button @click="updateMapEmbed()"
+                                    class="px-6 bg-neutral-900 text-white hover:bg-gold-bg transition-colors flex items-center justify-center">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="mt-4 p-5 bg-neutral-50 rounded-2xl border border-gray-100 flex items-start space-x-4 shadow-sm">
-                    <div class="w-10 h-10 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2"></path></svg>
+
+                <div
+                    class="mt-4 p-5 bg-neutral-50 rounded-2xl border border-gray-100 flex items-start space-x-4 shadow-sm">
+                    <div
+                        class="w-10 h-10 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                stroke-width="2"></path>
+                        </svg>
                     </div>
                     <div>
-                        <p class="text-[10px] font-black text-neutral-900 uppercase tracking-[0.2em] mb-1">Pinned Destination</p>
-                        <p class="text-xs font-bold text-gray-600 leading-relaxed" x-text="shipping.address || 'Locate your house on the map...'"></p>
+                        <p class="text-[10px] font-black text-neutral-900 uppercase tracking-[0.2em] mb-1">Pinned
+                            Destination</p>
+                        <p class="text-xs font-bold text-gray-600 leading-relaxed"
+                            x-text="shipping.address || 'Locate your house on the map...'"></p>
                     </div>
                 </div>
             </section>
@@ -191,14 +251,19 @@
             <!-- Payment Methods -->
             <section class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
                 <h2 class="text-xl font-black mb-6 flex items-center">
-                    <span class="w-8 h-8 rounded-full lux-gradient text-white flex items-center justify-center text-sm mr-3">4</span>
+                    <span
+                        class="w-8 h-8 rounded-full lux-gradient text-white flex items-center justify-center text-sm mr-3">4</span>
                     Payment Verification
                 </h2>
-                
+
                 <div class="space-y-4">
-                    <button @click="payment.method = 'bank'" 
-                            class="w-full p-4 rounded-2xl border-2 border-neutral-900 bg-neutral-900 text-white transition-all font-black text-xs uppercase tracking-widest flex flex-col items-center justify-center space-y-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    <button @click="payment.method = 'bank'"
+                        class="w-full p-4 rounded-2xl border-2 border-neutral-900 bg-neutral-900 text-white transition-all font-black text-xs uppercase tracking-widest flex flex-col items-center justify-center space-y-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
                         <span>Wallet Payment</span>
                     </button>
                 </div>
@@ -208,47 +273,72 @@
                 <!-- Digital Wallet / Bank Receipt Upload -->
                 <div x-show="payment.method === 'bank'" class="mt-6 space-y-4">
                     <div class="p-4 bg-neutral-900 rounded-2xl text-white">
-                        <p class="text-[10px] uppercase font-black text-gray-500 mb-3 tracking-widest">Our Payment Details</p>
+                        <p class="text-[10px] uppercase font-black text-gray-500 mb-3 tracking-widest">Our Payment
+                            Details</p>
                         <div class="space-y-4">
-                            <div class="flex justify-between text-xs"><span class="text-gray-400">EasyPaisa</span><span class="font-black">0321 4567890</span></div>
-                            <div class="flex justify-between text-xs"><span class="text-gray-400">Account Name</span><span class="font-black">Bhutta Fragrance</span></div>
-                            
+                            <div class="flex justify-between text-xs"><span class="text-gray-400">EasyPaisa</span><span
+                                    class="font-black">0321 4567890</span></div>
+                            <div class="flex justify-between text-xs"><span class="text-gray-400">Account
+                                    Name</span><span class="font-black">Bhutta Fragrance</span></div>
+
                             <!-- EasyPaisa Deep Link Button -->
-                            <a href="easypaisa://03214567890" 
-                               class="flex items-center justify-center space-x-2 w-full py-3 mt-2 bg-[#00A94F] hover:bg-[#008c41] text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg active:scale-95">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/></svg>
+                            <a href="easypaisa://03214567890"
+                                class="flex items-center justify-center space-x-2 w-full py-3 mt-2 bg-[#00A94F] hover:bg-[#008c41] text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg active:scale-95">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z" />
+                                </svg>
                                 <span>Open EasyPaisa App</span>
                             </a>
                         </div>
                     </div>
-                    
+
                     <div class="relative">
-                        <label class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">Upload Receipt (ScreenShot)</label>
+                        <label
+                            class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">Upload
+                            Receipt (ScreenShot)</label>
                         <div class="w-full relative">
-                            <input type="file" @change="handleFileUpload" class="hidden" id="receipt-upload" accept="image/*">
-                            <label for="receipt-upload" 
-                                   :class="{
+                            <input type="file" @change="handleFileUpload" class="hidden" id="receipt-upload"
+                                accept="image/*">
+                            <label for="receipt-upload" :class="{
                                        'border-neutral-900 bg-white': verificationStatus === 'verified',
                                        'border-red-500 bg-red-50': verificationStatus === 'failed',
                                        'border-blue-500 bg-blue-50': verificationStatus === 'verifying',
                                        'border-gray-200 bg-gray-50': verificationStatus === 'idle'
                                    }"
-                                   class="w-full flex items-center justify-between px-5 py-4 rounded-2xl border-2 border-dashed cursor-pointer hover:border-neutral-900 transition-all">
+                                class="w-full flex items-center justify-between px-5 py-4 rounded-2xl border-2 border-dashed cursor-pointer hover:border-neutral-900 transition-all">
                                 <div>
                                     <span class="text-sm font-bold text-gray-900" x-text="getUploadLabel()"></span>
-                                    <p x-show="verificationStatus === 'failed'" class="text-[9px] text-red-600 font-bold mt-1" x-text="verificationMessage"></p>
+                                    <p x-show="verificationStatus === 'failed'"
+                                        class="text-[9px] text-red-600 font-bold mt-1" x-text="verificationMessage"></p>
                                 </div>
                                 <div class="flex items-center">
                                     <template x-if="verificationStatus === 'verifying'">
-                                        <div class="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                        <div
+                                            class="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin">
+                                        </div>
                                     </template>
                                     <template x-if="verificationStatus === 'verified'">
-                                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
                                     </template>
                                     <template x-if="verificationStatus === 'failed'">
-                                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path
+                                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            </path>
+                                        </svg>
                                     </template>
-                                    <svg x-show="verificationStatus === 'idle'" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    <svg x-show="verificationStatus === 'idle'" class="w-5 h-5 text-gray-400"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12"
+                                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
                                 </div>
                             </label>
                         </div>
@@ -256,12 +346,16 @@
                 </div>
 
                 <!-- CTA Button -->
-                <button @click="placeFinalOrder()" 
-                        class="w-full mt-8 lux-gradient text-white py-5 rounded-[2rem] font-black uppercase tracking-widest text-sm shadow-xl hover:shadow-2xl transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center space-x-3"
-                        :disabled="isSubmitting">
+                <button @click="placeFinalOrder()"
+                    class="w-full mt-8 lux-gradient text-white py-5 rounded-[2rem] font-black uppercase tracking-widest text-sm shadow-xl hover:shadow-2xl transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center space-x-3"
+                    :disabled="isSubmitting">
                     <span x-text="isSubmitting ? 'Verifying Details...' : 'Confirm Order Now'"></span>
-                    <svg x-show="!isSubmitting" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                    <div x-show="isSubmitting" class="w-5 h-5 border-3 border-white/20 border-t-white rounded-full animate-spin"></div>
+                    <svg x-show="!isSubmitting" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    <div x-show="isSubmitting"
+                        class="w-5 h-5 border-3 border-white/20 border-t-white rounded-full animate-spin"></div>
                 </button>
             </section>
         </div>
@@ -335,7 +429,7 @@
                             this.items = [this.productData];
                         }
                     }
-                    
+
                     this.initMap();
                 },
 
@@ -368,7 +462,7 @@
 
                     this.verificationStatus = 'verifying';
                     this.verificationMessage = '';
-                    
+
                     const formData = new FormData();
                     formData.append('receipt', file);
                     formData.append('expectedAmount', this.getItemsTotal() + 150);
@@ -401,7 +495,7 @@
                 placeFinalOrder() {
                     // Logic: 11 digits phone check
                     const phoneClean = this.shipping.phone.replace(/\D/g, '');
-                    
+
                     if (!this.shipping.name || !this.shipping.phone || !this.shipping.city) {
                         alert("Please fill in your basic contact details first.");
                         return;
@@ -427,7 +521,7 @@
                     }
 
                     this.isSubmitting = true;
-                    
+
                     // NEW: Persistent Storage in Backend
                     const orderPayload = {
                         customer: {
@@ -453,12 +547,12 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(orderPayload)
                     }).then(res => res.json())
-                      .then(data => console.log("Order synchronized with master DB:", data))
-                      .catch(err => console.warn("Logistics server offline. Using fallback email protocol only.", err));
+                        .then(data => console.log("Order synchronized with master DB:", data))
+                        .catch(err => console.warn("Logistics server offline. Using fallback email protocol only.", err));
 
                     setTimeout(() => {
                         this.isSubmitting = false;
-                        
+
                         const itemsDescription = this.items.map(item => `   - ${item.name} x${item.qty || 1} (Subtotal: PKR ${(item.price * (item.qty || 1)).toLocaleString()})`).join('\n');
                         const subject = encodeURIComponent(`Bhutta Multi-Order: ${this.items.length} Scents (${this.shipping.phone})`);
                         const body = encodeURIComponent(`
@@ -490,4 +584,5 @@ STATUS: PENDING VERIFICATION
         }
     </script>
 </body>
+
 </html>
