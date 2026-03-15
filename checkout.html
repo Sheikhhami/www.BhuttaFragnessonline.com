@@ -8,9 +8,14 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
-    <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <!-- Maps API Removed (Using Embed Mode) -->
     
+    <script>
+        window.gm_authFailure = () => {
+            console.error("Google Maps API Authentication Failed. Check API Key.");
+            window.dispatchEvent(new CustomEvent('map-api-error'));
+        };
+    </script>
     <style>
         body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; }
         [x-cloak] { display: none !important; }
@@ -144,21 +149,41 @@
                 </h2>
                 <p class="text-xs text-gray-400 font-bold mb-6 px-1">Help our riders find you instantly by dragging the pin.</p>
                 
-                <div class="relative mb-6">
-                    <input id="pac-input" type="text" placeholder="Search your street or landmark..." 
-                           class="w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-neutral-900 outline-none transition-all font-bold text-sm pr-12 shadow-inner">
-                    <div class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                <div class="relative group">
+                    <div class="w-full h-96 rounded-[2.5rem] bg-gray-50 border-2 border-gray-100 overflow-hidden relative shadow-inner">
+                        <iframe 
+                            :src="mapEmbedUrl" 
+                            class="w-full h-full border-0" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                        
+
+                        <!-- Floating Search Bar Over Map -->
+                        <div class="absolute top-6 left-6 right-6 pointer-events-none flex justify-center">
+                            <div class="max-w-md w-full pointer-events-auto bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-neutral-100 flex overflow-hidden ring-4 ring-neutral-900/5 transform transition hover:scale-[1.02]">
+                                <input type="text" 
+                                       x-model="shipping.address" 
+                                       @keyup.enter="updateMapEmbed()"
+                                       placeholder="Enter your house address or landmark..." 
+                                       class="flex-1 px-6 py-4 text-xs font-bold outline-none bg-transparent placeholder:text-gray-400">
+                                <button @click="updateMapEmbed()" 
+                                        class="px-6 bg-neutral-900 text-white hover:bg-gold-bg transition-colors flex items-center justify-center">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div id="map" class="w-full h-64 rounded-2xl bg-gray-100 border-2 border-gray-100 overflow-hidden"></div>
                 
-                <div class="mt-4 p-4 bg-green-50 rounded-2xl border border-green-100 flex items-start space-x-3">
-                    <svg class="w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                <div class="mt-4 p-5 bg-neutral-50 rounded-2xl border border-gray-100 flex items-start space-x-4 shadow-sm">
+                    <div class="w-10 h-10 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2"></path></svg>
+                    </div>
                     <div>
-                        <p class="text-[10px] font-black text-green-800 uppercase tracking-wider">Live Geolocation Locking</p>
-                        <p class="text-[9px] font-bold text-green-700/70" x-text="shipping.address || 'Waiting for pin selection...'"></p>
+                        <p class="text-[10px] font-black text-neutral-900 uppercase tracking-[0.2em] mb-1">Pinned Destination</p>
+                        <p class="text-xs font-bold text-gray-600 leading-relaxed" x-text="shipping.address || 'Locate your house on the map...'"></p>
                     </div>
                 </div>
             </section>
@@ -268,6 +293,10 @@
                 verificationMessage: '',
                 receiptUploaded: false,
                 isSubmitting: false,
+                mapLoading: false,
+                mapError: false,
+                mapType: 'roadmap',
+                mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d108422.37397686566!2d73.4013217!3d32.579772!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391f7d7e2a72f7b9%3A0x9c68d61fb05fec93!2sMandi%20Bahauddin%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1710526000000!5m2!1sen!2s',
 
                 getUploadLabel() {
                     const labels = {
@@ -280,6 +309,11 @@
                 },
 
                 init() {
+                    window.addEventListener('map-api-error', () => {
+                        this.mapError = true;
+                        this.mapLoading = false;
+                    });
+
                     // Check for multi-product queue first
                     const queue = localStorage.getItem('ship_now_queue');
                     if (queue) {
@@ -310,69 +344,22 @@
                 },
 
                 initMap() {
-                    const defaultPos = { lat: 31.5204, lng: 74.3587 }; // Lahore
-                    
-                    this.map = new google.maps.Map(document.getElementById('map'), {
-                        center: defaultPos,
-                        zoom: 14,
-                        styles: [
-                            { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-                            { featureType: 'transit', stylers: [{ visibility: 'off' }] }
-                        ],
-                        disableDefaultUI: true,
-                        zoomControl: true
-                    });
-
-                    this.marker = new google.maps.Marker({
-                        position: defaultPos,
-                        map: this.map,
-                        draggable: true,
-                        animation: google.maps.Animation.DROP,
-                        icon: {
-                            path: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
-                            fillColor: "#0f172a",
-                            fillOpacity: 1,
-                            strokeWeight: 2,
-                            strokeColor: "#ffffff",
-                            scale: 2,
-                            anchor: new google.maps.Point(12, 22)
-                        }
-                    });
-
-                    const input = document.getElementById('pac-input');
-                    const autocomplete = new google.maps.places.Autocomplete(input);
-                    autocomplete.bindTo('bounds', this.map);
-
-                    autocomplete.addListener('place_changed', () => {
-                        const place = autocomplete.getPlace();
-                        if (!place.geometry) return;
-
-                        if (place.geometry.viewport) {
-                            this.map.fitBounds(place.geometry.viewport);
-                        } else {
-                            this.map.setCenter(place.geometry.location);
-                            this.map.setZoom(17);
-                        }
-                        this.marker.setPosition(place.geometry.location);
-                        this.updateAddress(place.geometry.location);
-                    });
-
-                    this.marker.addListener('dragend', () => {
-                        this.updateAddress(this.marker.getPosition());
-                    });
-
-                    // Initial Reverse Geocode
-                    this.updateAddress(defaultPos);
+                    console.log("Embed Mode: Static view enabled.");
+                    this.mapLoading = false;
                 },
 
-                updateAddress(pos) {
-                    const geocoder = new google.maps.Geocoder();
-                    geocoder.geocode({ location: pos }, (results, status) => {
-                        if (status === 'OK' && results[0]) {
-                            this.shipping.address = results[0].formatted_address;
-                            this.shipping.location = { lat: pos.lat && typeof pos.lat === 'function' ? pos.lat() : pos.lat, lng: pos.lng && typeof pos.lng === 'function' ? pos.lng() : pos.lng };
-                        }
-                    });
+                toggleMapType() {
+                    console.log("Map Toggle disabled in Embed Mode");
+                },
+
+                updateAddress() {
+                    console.log("Reverse Geocoding disabled in Embed Mode");
+                },
+
+                updateMapEmbed() {
+                    if (!this.shipping.address) return;
+                    const query = encodeURIComponent(this.shipping.address + ", Mandi Bahauddin, Pakistan");
+                    this.mapEmbedUrl = `https://www.google.com/maps?q=${query}&output=embed`;
                 },
 
                 async handleFileUpload(event) {
@@ -441,14 +428,33 @@
 
                     this.isSubmitting = true;
                     
-                    // Simulate order saving to database "Pending Verification"
-                    console.log("Saving Order to Database: PENDING VERIFICATION");
-                    console.log("Payload:", {
-                        items: this.items,
-                        shipping: this.shipping,
-                        payment: this.payment,
-                        status: 'Pending Verification'
-                    });
+                    // NEW: Persistent Storage in Backend
+                    const orderPayload = {
+                        customer: {
+                            name: this.shipping.name,
+                            email: this.shipping.email || 'customer@bhuttafragrance.com',
+                            phone: this.shipping.phone
+                        },
+                        shippingAddress: {
+                            text: this.shipping.address,
+                            location: this.shipping.location
+                        },
+                        items: this.items.map(item => ({
+                            name: item.name,
+                            price: item.price,
+                            quantity: item.qty || 1
+                        })),
+                        totalAmount: this.getItemsTotal() + 150
+                    };
+
+                    // Attempt to save to master database
+                    fetch('http://localhost:5000/api/checkout', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(orderPayload)
+                    }).then(res => res.json())
+                      .then(data => console.log("Order synchronized with master DB:", data))
+                      .catch(err => console.warn("Logistics server offline. Using fallback email protocol only.", err));
 
                     setTimeout(() => {
                         this.isSubmitting = false;
