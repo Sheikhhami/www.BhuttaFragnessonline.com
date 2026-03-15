@@ -258,89 +258,97 @@
 
                 <div class="space-y-4">
                     <button @click="payment.method = 'bank'"
-                        class="w-full p-4 rounded-2xl border-2 border-neutral-900 bg-neutral-900 text-white transition-all font-black text-xs uppercase tracking-widest flex flex-col items-center justify-center space-y-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
-                        <span>Wallet Payment</span>
+                        class="w-full p-4 rounded-2xl border-2 border-[#00A94F] bg-[#00A94F] text-white transition-all font-black text-xs uppercase tracking-widest flex flex-col items-center justify-center space-y-2 shadow-lg shadow-[#00A94F]/20">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                            <span>Direct Wallet Payment</span>
+                        </div>
+                        <p class="text-[8px] opacity-80 font-bold">EasyPaisa USSD/Push Enabled</p>
                     </button>
                 </div>
 
 
 
-                <!-- Digital Wallet / Bank Receipt Upload -->
-                <div x-show="payment.method === 'bank'" class="mt-6 space-y-4">
-                    <div class="p-4 bg-neutral-900 rounded-2xl text-white">
-                        <p class="text-[10px] uppercase font-black text-gray-500 mb-3 tracking-widest">Our Payment
-                            Details</p>
-                        <div class="space-y-4">
-                            <div class="flex justify-between text-xs"><span class="text-gray-400">EasyPaisa</span><span
-                                    class="font-black">0321 4567890</span></div>
-                            <div class="flex justify-between text-xs"><span class="text-gray-400">Account
-                                    Name</span><span class="font-black">Bhutta Fragrance</span></div>
-
-                            <!-- EasyPaisa Deep Link Button -->
-                            <a href="easypaisa://03214567890"
-                                class="flex items-center justify-center space-x-2 w-full py-3 mt-2 bg-[#00A94F] hover:bg-[#008c41] text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg active:scale-95">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z" />
-                                </svg>
-                                <span>Open EasyPaisa App</span>
-                            </a>
+                <!-- EasyPaisa Direct Mobile Account Payment -->
+                <div x-show="payment.method === 'bank'" class="mt-6 space-y-6">
+                    <div class="p-6 bg-[#00A94F]/5 rounded-[2rem] border-2 border-[#00A94F]/20 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10">
+                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-20 h-20 grayscale"> <!-- Placeholder logo for EP -->
                         </div>
-                    </div>
+                        
+                        <div class="relative z-10">
+                            <h3 class="text-[#00A94F] font-black text-sm uppercase tracking-widest mb-2">EasyPaisa Direct Wallet</h3>
+                            <div class="text-[10px] text-gray-500 font-bold mb-6">
+                                <p>Enter your EasyPaisa mobile number. You will receive a push notification on your phone to enter your PIN.</p>
+                                <p class="mt-2 text-neutral-900 bg-white/50 p-2 rounded-lg border border-gold/10 inline-block font-black">
+                                    <span class="text-[#00A94F]">INSTRUCTION:</span> PIN : 03472973100 DAIL IN THE ACCOUNT NUMBER
+                                </p>
+                            </div>
 
-                    <div class="relative">
-                        <label
-                            class="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">Upload
-                            Receipt (ScreenShot)</label>
-                        <div class="w-full relative">
-                            <input type="file" @change="handleFileUpload" class="hidden" id="receipt-upload"
-                                accept="image/*">
-                            <label for="receipt-upload" :class="{
-                                       'border-neutral-900 bg-white': verificationStatus === 'verified',
-                                       'border-red-500 bg-red-50': verificationStatus === 'failed',
-                                       'border-blue-500 bg-blue-50': verificationStatus === 'verifying',
-                                       'border-gray-200 bg-gray-50': verificationStatus === 'idle'
-                                   }"
-                                class="w-full flex items-center justify-between px-5 py-4 rounded-2xl border-2 border-dashed cursor-pointer hover:border-neutral-900 transition-all">
-                                <div>
-                                    <span class="text-sm font-bold text-gray-900" x-text="getUploadLabel()"></span>
-                                    <p x-show="verificationStatus === 'failed'"
-                                        class="text-[9px] text-red-600 font-bold mt-1" x-text="verificationMessage"></p>
-                                </div>
-                                <div class="flex items-center">
-                                    <template x-if="verificationStatus === 'verifying'">
-                                        <div
-                                            class="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin">
+                            <div class="space-y-4">
+                                <template x-if="paymentStatus === 'idle' || paymentStatus === 'failed'">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Account Number (11 Digits)</label>
+                                            <div class="relative">
+                                                <input type="tel" 
+                                                       x-model="walletNumber" 
+                                                       placeholder="03XX XXXXXXX" 
+                                                       class="w-full px-6 py-4 bg-white border-2 border-[#00A94F]/20 rounded-2xl focus:border-[#00A94F] outline-none transition-all font-black text-sm tracking-widest placeholder:text-gray-200">
+                                                <div class="absolute right-4 top-1/2 -translate-y-1/2">
+                                                    <svg class="w-5 h-5 text-[#00A94F]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/></svg>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </template>
-                                    <template x-if="verificationStatus === 'verified'">
-                                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5"
-                                                stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </svg>
-                                    </template>
-                                    <template x-if="verificationStatus === 'failed'">
-                                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path
-                                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                            </path>
-                                        </svg>
-                                    </template>
-                                    <svg x-show="verificationStatus === 'idle'" class="w-5 h-5 text-gray-400"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12"
-                                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                </div>
-                            </label>
+
+                                        <!-- Dial Merchant Fallback -->
+                                        <div class="flex items-center justify-between p-4 bg-white rounded-xl border border-[#00A94F]/10 shadow-sm">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center text-gold">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-width="2.5"></path></svg>
+                                                </div>
+                                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Manual Support</p>
+                                            </div>
+                                            <a href="tel:03472973100" class="text-[9px] font-black text-[#00A94F] underline uppercase tracking-widest">Call Ibrahim: 0347 2973100</a>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- Error State -->
+                                <template x-if="paymentStatus === 'failed'">
+                                    <div class="bg-red-50 text-red-500 p-4 rounded-xl text-[10px] font-bold border border-red-100 flex items-center space-x-2 animate-shake">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"></path></svg>
+                                        <span x-text="paymentErrorMessage"></span>
+                                    </div>
+                                </template>
+
+                                <!-- Processing / Push Sent State -->
+                                <template x-if="paymentStatus === 'processing'">
+                                    <div class="text-center py-6 space-y-4">
+                                        <div class="relative w-16 h-16 mx-auto">
+                                            <div class="absolute inset-0 border-4 border-[#00A94F]/20 rounded-full"></div>
+                                            <div class="absolute inset-0 border-4 border-t-[#00A94F] rounded-full animate-spin"></div>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-black text-neutral-900 uppercase">Push Notification Sent!</p>
+                                            <p class="text-[10px] text-gray-400 font-bold mt-1">Please check your phone and enter your 5-digit EasyPaisa PIN to approve.</p>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- Success State -->
+                                <template x-if="paymentStatus === 'success'">
+                                    <div class="text-center py-6 space-y-4 animate-bounce-in">
+                                        <div class="w-16 h-16 bg-green-500 rounded-full mx-auto flex items-center justify-center text-white shadow-xl">
+                                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-black text-neutral-900 uppercase">Payment Approved!</p>
+                                            <p class="text-[10px] text-gray-400 font-bold mt-1">Order successfully verified. Redirecting...</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -381,6 +389,9 @@
                 payment: {
                     method: 'bank'
                 },
+                paymentStatus: 'idle', // idle, processing, success, failed
+                walletNumber: '',
+                paymentErrorMessage: '',
                 map: null,
                 marker: null,
                 verificationStatus: 'idle', // idle, verifying, verified, failed
@@ -492,92 +503,64 @@
                     }
                 },
 
-                placeFinalOrder() {
-                    // Logic: 11 digits phone check
+                async placeFinalOrder() {
                     const phoneClean = this.shipping.phone.replace(/\D/g, '');
 
-                    if (!this.shipping.name || !this.shipping.phone || !this.shipping.city) {
-                        alert("Please fill in your basic contact details first.");
+                    if (!this.shipping.name || !this.shipping.phone || !this.shipping.city || !this.shipping.address) {
+                        alert("Please complete the shipping and location steps above.");
                         return;
                     }
 
-                    if (phoneClean.length < 11) {
-                        alert("Invalid phone number. Please enter a valid 11-digit mobile number.");
-                        return;
-                    }
-
-                    if (!this.shipping.address) {
-                        alert("Please select your location on the map.");
-                        return;
-                    }
-
-                    if (this.payment.method === 'bank' && this.verificationStatus !== 'verified') {
-                        if (confirm("Payment verification is incomplete. Do you want to process this order manually?")) {
-                            // If user manually confirms, we skip AI check
-                        } else {
-                            alert("Please upload a valid payment receipt to proceed.");
+                    if (this.payment.method === 'bank') {
+                        const walletClean = this.walletNumber.replace(/\D/g, '');
+                        if (walletClean.length < 11) {
+                            alert("Please enter a valid 11-digit EasyPaisa mobile number.");
                             return;
                         }
+
+                        this.paymentStatus = 'processing';
+                        this.isSubmitting = true;
+
+                        try {
+                            const response = await fetch('http://localhost:3000/api/easypaisa/payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    mobileNumber: walletClean,
+                                    amount: this.getItemsTotal() + 150,
+                                    orderDetails: {
+                                        customer: this.shipping.name,
+                                        items: this.items.length
+                                    }
+                                })
+                            });
+
+                            const result = await response.json();
+
+                            if (result.success) {
+                                this.paymentStatus = 'success';
+                                setTimeout(() => {
+                                    window.location.href = `order-success.html?txn=${result.transactionId}`; 
+                                }, 3000);
+                            } else {
+                                this.paymentStatus = 'failed';
+                                this.paymentErrorMessage = result.message || 'Transaction Failed.';
+                                this.isSubmitting = false;
+                            }
+                        } catch (error) {
+                            this.paymentStatus = 'failed';
+                            this.paymentErrorMessage = 'Payment Gateway Offline. Try again later.';
+                            this.isSubmitting = false;
+                        }
+                        return;
                     }
 
+                    // Fallback for other methods if any
                     this.isSubmitting = true;
-
-                    // NEW: Persistent Storage in Backend
-                    const orderPayload = {
-                        customer: {
-                            name: this.shipping.name,
-                            email: this.shipping.email || 'customer@bhuttafragrance.com',
-                            phone: this.shipping.phone
-                        },
-                        shippingAddress: {
-                            text: this.shipping.address,
-                            location: this.shipping.location
-                        },
-                        items: this.items.map(item => ({
-                            name: item.name,
-                            price: item.price,
-                            quantity: item.qty || 1
-                        })),
-                        totalAmount: this.getItemsTotal() + 150
-                    };
-
-                    // Attempt to save to master database
-                    fetch('http://localhost:5000/api/checkout', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(orderPayload)
-                    }).then(res => res.json())
-                        .then(data => console.log("Order synchronized with master DB:", data))
-                        .catch(err => console.warn("Logistics server offline. Using fallback email protocol only.", err));
-
                     setTimeout(() => {
                         this.isSubmitting = false;
-
-                        const itemsDescription = this.items.map(item => `   - ${item.name} x${item.qty || 1} (Subtotal: PKR ${(item.price * (item.qty || 1)).toLocaleString()})`).join('\n');
-                        const subject = encodeURIComponent(`Bhutta Multi-Order: ${this.items.length} Scents (${this.shipping.phone})`);
-                        const body = encodeURIComponent(`
-NEW ORDER: ${this.items.reduce((acc, i) => acc + (i.qty || 1), 0)} ITEMS
------------------------------
-ITEMS:
-${itemsDescription}
-
-LOGISTICS FEE: PKR 150
-GRAND TOTAL: PKR ${(this.getItemsTotal() + 150).toLocaleString()}
------------------------------
-NAME: ${this.shipping.name}
-PHONE: ${this.shipping.phone}
-CITY: ${this.shipping.city}
-ADDRESS: ${this.shipping.address}
-MAP: https://www.google.com/maps/search/?api=1&query=${this.shipping.location.lat},${this.shipping.location.lng}
-
-PAYMENT: DIGITAL WALLET (Receipt Attached)
------------------------------
-STATUS: PENDING VERIFICATION
-                        `.trim());
-
-                        window.location.href = `mailto:sheikhhammadbinmunir@gmail.com?subject=${subject}&body=${body}`;
-                        localStorage.removeItem('ship_now_queue');
-                        alert("Success! Your order is now 'Pending Verification'. We have opened your email client to notify our team.");
+                        alert("Order Placed Successfully!");
+                        window.location.href = 'index.html';
                     }, 2000);
                 }
             }
