@@ -113,7 +113,8 @@
                 <a href="#" @click.prevent="fetchCategory('giftsets', 'Gift Sets')"
                     :class="activeCategory === 'Gift Sets' ? 'text-gold font-bold' : 'hover:text-gold transition'">Gift
                     Sets</a>
-                <a href="#" class="hover:text-gold transition">Deals & Offers</a>
+                                <a href="#" @click.prevent="fetchCategory('deals', 'Deals & Offers')"
+                    :class="activeCategory === 'Deals & Offers' ? 'text-gold font-bold' : 'hover:text-gold transition'">Deals & Offers</a>
                 <a href="#" class="hover:text-gold transition">Fragrance Guide</a>
             </div>
         </nav>
@@ -1524,6 +1525,59 @@
                         isNew: true,
                         rating: 5.0,
                         salesCount: 15
+                    },
+                    {
+                        id: 5,
+                        name: 'CROWN Q-600',
+                        type: 'Premium Smart Watch',
+                        size: '2.20" Display',
+                        price: 4500,
+                        oldPrice: 6500,
+                        discount: 'ULTIMATE BUNDLE',
+                        notes: '7+1 SERIES 10 - The Complete Ultimate Bundle',
+                        image: 'crown_q600.png',
+                        hoverImage: 'crown_q600.png',
+                        brand: 'CROWN',
+                        gender: 'Unisex',
+                        isNew: true,
+                        rating: 5.0,
+                        salesCount: 1
+                    },
+                    {
+                        id: 6,
+                        name: 'BHUTTA IMPERIOUS DEALS',
+                        type: 'Luxury Collection Bundle',
+                        size: '8-in-1 Set',
+                        price: 6000,
+                        oldPrice: 8500,
+                        discount: 'SUPER DEAL',
+                        notes: '2 Full Perfumes (GOLD + 24 CARAT) + 4 TESTERS + 2 itars',
+                        image: 'imperious_deal.png',
+                        hoverImage: 'imperious_deal.png',
+                        brand: 'Bhutta Gold',
+                        category: 'deals',
+                        gender: 'Unisex',
+                        isNew: true,
+                        rating: 5.0,
+                        salesCount: 20
+                    },
+                    {
+                        id: 7,
+                        name: 'BHUTTA PLEASURES DEAL',
+                        type: 'Tech & Fragrance Bundle',
+                        size: 'Bundle',
+                        price: 7000,
+                        oldPrice: 9500,
+                        discount: 'BUNDLE OFFER',
+                        notes: 'ANY BHUTTA PERFUME + CROWN Q-600 WATCH',
+                        image: 'pleasures_deal.png',
+                        hoverImage: 'pleasures_deal.png',
+                        brand: 'Bhutta Gold',
+                        category: 'deals',
+                        gender: 'Unisex',
+                        isNew: true,
+                        rating: 5.0,
+                        salesCount: 12
                     }
                 ],
                 products: [],
@@ -1737,6 +1791,8 @@ Maps URL: https://www.google.com/maps/search/?api=1&query=${this.orderLocation?.
                         this.products = this.database.filter(p => p.gender === value);
                     } else if (type === 'giftsets') {
                         this.products = []; // Empty state
+                    } else if (type === 'deals') {
+                        this.products = this.database.filter(p => p.category === 'deals');
                     } else {
                         // 'all'
                         this.products = this.database;
